@@ -19,5 +19,8 @@
     "spacegrotesk",
     "Tailwindcss",
     "vuex"
-  ]
+  ],
+  "[vue]": {
+    "editor.defaultFormatter": "Vue.volar"
+  }
 }

@@ -4,7 +4,7 @@ import { footerData, seoData } from '~/data'
 
 <template>
   <div>
-    <p class="text-black dark:text-zinc-300 text-base font-semibold">Connect With Me</p>
+    <p class="text-black dark:text-zinc-300 text-base font-semibold">与我联系</p>
     <p class="dark:text-zinc-300">
       {{ footerData.authorInterest }}
     </p>

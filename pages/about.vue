@@ -44,7 +44,7 @@ defineOgImageComponent('About', {
                 class="px-2 py-1 lg:px-3 lg:py-2 bg-gray-300 text-gray-800 rounded-md dark:bg-slate-700 dark:text-[#F1F2F4]"
                 aria-label="LinkedIn"
               >
-                <Icon name="fa:linkedin-square" size="1em" />
+                <Icon name="simple-icons:gitee" size="1em" />
               </NuxtLink>
               <NuxtLink
                 :to="socialLinks.twitterLink"
@@ -72,7 +72,7 @@ defineOgImageComponent('About', {
           {{ aboutPage.description }}
         </h3>
 
-        <p>{{ aboutPage.aboutMe }}</p>
+        <p class="whitespace-pre-line leading-loose">&#128080{{ aboutPage.aboutMe }}</p>
       </div>
       <div class="hidden sm:block col-span-3">
         <NuxtImg src="/liu.png" width="450" height="500" quality="50" class="rounded-md" />

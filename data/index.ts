@@ -7,15 +7,15 @@ export const footerData = {
   aboutAuthor:
     '技术小学生',
   authorInterest:
-    "努力学习",
+    "1905321532@qq.com",
   aboutTheSite:
-    "This is a personal blog site built with Nuxt3, TailwindCSS, NuxtContent, Nuxt Icon. Currently it's deployed in Vercel.",
+    "这是我在学习之余搭建的个人博客，希望能再此分享一些日常和学习心得",
 }
 
 export const homePage = {
   title: 'Welcome To My Blog Site',
   description:
-    'Get Web Development, Javascript, Typescript, NodeJs, Vue, and Nuxt, Related Articles, Tips, Learning resources and more.',
+    '保持热爱',
 }
 
 export const blogsPage = {
@@ -31,19 +31,19 @@ export const categoryPage = {
 
 export const aboutPage = {
   title: 'Liu',
-  description: '技术小学生',
+  description: '无限进步',
   aboutMe:
-    "Hello, fellow human!",
+    "Hello ~ \n我是小刘，正在北京读研究生，学习各种计算机知识ing \n同时也是一名健身爱好者💪",
 }
 
 export const seoData = {
-  title: `Liu's Blog | Liu Blog`,
-  ogTitle: `Let's keep learning - Liu Blog | Liu's Blog`,
-  description: `Hi I am Riyad. A Software Engineer at FieldNation, with over 3.5+ years experience in software development. - Riyads Blog | Riyad's Blog`,
-  twitterDescription: `Riyad's Blog, where I play around with Nuxt, Vue, and more and showcase my blog, resources, etc - Riyads Blog | Riyad's Blog`,
+  title: `Liu's Blog`,
+  ogTitle: `Let's keep learning - Liu's Blog`,
+  description: `Hi I am Liu. 一名在北京学习的研究生。`,
+  twitterDescription: ` `,
   image:
     'https://res.cloudinary.com/dmecmyphj/image/upload/v1673548905/nuxt-blog/cover_ntgs6u.webp',
-  mySite: 'https://blog-nurriyad.vercel.app',
+  mySite: 'https://lxy2002.top',
   twitterHandle: '@qdnvubp',
   mailAddress: '1905321532@qq.com',
 }
