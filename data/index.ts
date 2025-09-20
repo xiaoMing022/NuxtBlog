@@ -43,7 +43,7 @@ export const seoData = {
   twitterDescription: ` `,
   image:
     'https://res.cloudinary.com/dmecmyphj/image/upload/v1673548905/nuxt-blog/cover_ntgs6u.webp',
-  mySite: 'https://lxy2002.top',
+  mySite: 'https://blog-nurriyad.vercel.app',
   twitterHandle: '@qdnvubp',
   mailAddress: '1905321532@qq.com',
 }
