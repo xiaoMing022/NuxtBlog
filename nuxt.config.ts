@@ -76,6 +76,10 @@ export default defineNuxtConfig({
 
   icon: {
     serverBundle: true, // 把图标打包进构建产物，不再依赖外部请求
-  }
+  },
+  ogImage: {
+    // provider: 'satori', // 或者 'puppeteer'
+    static: false,       // 提前生成静态文件，不走 http://localhost 请求
+  },
 
 })
