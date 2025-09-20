@@ -1,6 +1,6 @@
 ---
 title: How to fix vuex type issue
-date: 9th June 2024
+date: 2024/7/9
 description: In recent vue project we see that vuex type not working properly. We will fix that type issue and make vuex type workable
 image: /blogs-img/blog6.jpg
 alt: How to fix vuex type issue

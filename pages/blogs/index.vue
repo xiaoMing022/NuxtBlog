@@ -65,11 +65,11 @@ function onNextPageClick() {
 }
 
 useHead({
-  title: 'Archive',
+  title: 'Blogs',
   meta: [
     {
       name: 'description',
-      content: 'Here you will find all the blog posts I have written & published on this site.',
+      content: 'All the blog posts I have written & published on this site.',
     },
   ],
 })
@@ -78,8 +78,8 @@ useHead({
 const siteData = useSiteConfig()
 defineOgImage({
   props: {
-    title: 'Archive',
-    description: 'Here you will find all the blog posts I have written & published on this site.',
+    title: 'Blogs',
+    description: 'All the blog posts I have written & published on this site.',
     siteName: siteData.url,
   },
 })

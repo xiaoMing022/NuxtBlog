@@ -1,12 +1,28 @@
 <script lang="ts" setup>
 import type { BlogPost } from '~/types/blog'
 
-// Function to parse dates in the format "1st Mar 2023"
-function parseCustomDate(dateStr: string): Date {
-  // Remove ordinal indicators (st, nd, rd, th)
-  const cleanDateStr = dateStr.replace(/(\d+)(st|nd|rd|th)/, '$1')
-  // Parse the date
-  return new Date(cleanDateStr)
+
+function parseDate(dateStr: string): Date {
+  // 使用 / 分割字符串
+  const parts = dateStr.split("/");
+
+  if (parts.length !== 3) {
+    throw new Error("Invalid date format. Expected format: YYYY/MM/DD");
+  }
+
+  const [yearStr, monthStr, dayStr] = parts;
+  const year = parseInt(yearStr, 10);
+  const month = parseInt(monthStr, 10) - 1; // JS 的月份从 0 开始
+  const day = parseInt(dayStr, 10);
+
+  const date = new Date(year, month, day);
+
+  // 简单校验日期有效性
+  if (isNaN(date.getTime())) {
+    throw new Error("Invalid date value");
+  }
+
+  return date;
 }
 
 // Get Last 6 Publish Post from the content/blog directory
@@ -14,13 +30,15 @@ const { data } = await useAsyncData('recent-post', () =>
   queryCollection('content')
     .all()
     .then((data) => {
+
+      console.log(data)
       return data
         .sort((a, b) => {
-          const aDate = parseCustomDate(a.meta.date as string)
-          const bDate = parseCustomDate(b.meta.date as string)
+          const aDate = parseDate(a.meta.date as string)
+          const bDate = parseDate(b.meta.date as string)
           return bDate.getTime() - aDate.getTime()
         })
-        .slice(0, 3)
+        .slice(0,3)
     }),
 )
 
@@ -40,6 +58,8 @@ const formattedData = computed(() => {
     }
   })
 })
+
+console.log(formattedData)
 
 useHead({
   title: 'Home',
@@ -62,7 +82,7 @@ useHead({
 
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       <template v-for="post in formattedData" :key="post.title">
-        <BlogCard
+          <BlogCard
           :path="post.path"
           :title="post.title"
           :date="post.date"

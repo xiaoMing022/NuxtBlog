@@ -5,6 +5,7 @@ const { data } = await useAsyncData('all-blog-post-by-category', () =>
   queryCollection('content').all(),
 )
 
+
 const allTags = new Map()
 
 data.value?.forEach((blog) => {

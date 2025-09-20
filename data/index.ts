@@ -20,7 +20,7 @@ export const homePage = {
 
 export const blogsPage = {
   title: 'All Blogs',
-  description: '学习小记录',
+  description: '学习记录',
 }
 
 export const categoryPage = {
