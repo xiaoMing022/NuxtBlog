@@ -74,5 +74,8 @@ export default defineNuxtConfig({
     },
   },
 
+  icon: {
+    serverBundle: true, // 把图标打包进构建产物，不再依赖外部请求
+  }
 
 })
