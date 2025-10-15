@@ -41,6 +41,9 @@ const { data } = await useAsyncData('recent-post', () =>
         .slice(0,3)
     }),
 )
+console.log("文章数据：")
+console.log(data)
+console.log("文章数据：")
 
 const formattedData = computed(() => {
   return data.value?.map((articles) => {
@@ -59,7 +62,6 @@ const formattedData = computed(() => {
   })
 })
 
-console.log(formattedData)
 
 useHead({
   title: 'Home',
@@ -79,8 +81,9 @@ useHead({
       <Icon name="mdi:star-three-points-outline" size="2em" class="text-black dark:text-zinc-300" />
       <h2 class="text-4xl font-semibold text-black dark:text-zinc-300">最近</h2>
     </div>
-
+    <NuxtLink to="/doc" class="text-sky-700 dark:text-sky-400 hover:underline mb-4 inline-block">查看所有文章 &rarr;</NuxtLink>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
+      
       <template v-for="post in formattedData" :key="post.title">
           <BlogCard
           :path="post.path"

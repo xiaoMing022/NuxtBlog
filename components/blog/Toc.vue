@@ -3,6 +3,7 @@ const { path } = useRoute()
 const articles = await queryCollection('content').path(path).first()
 
 const links = articles?.body?.toc?.links || []
+console.log("文章目录：")
 console.log(articles)
 </script>
 

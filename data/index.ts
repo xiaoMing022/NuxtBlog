@@ -33,7 +33,7 @@ export const aboutPage = {
   title: 'Liu',
   description: '无限进步',
   aboutMe:
-    "Hello ~ \n我是小刘，正在北京读研究生，学习各种计算机知识ing \n同时也是一名健身爱好者💪",
+    "Hello ~ \n我是小刘，在北京读研究生，学习各种计算机知识ing \n同时也是一名健身爱好者💪",
 }
 
 export const seoData = {
