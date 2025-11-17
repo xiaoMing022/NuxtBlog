@@ -1,16 +1,3 @@
----
-title: 前端
-date:  2025/10/13
-description: 前端八股总结
-image: /blogs-img/web.png
-alt: JS&&VUE&REACT
-ogImage: /blogs-img/web.png
-tags: ['web','Vue','React','JavaScript']
-published: true
----
-
-# 前端
-
 ## 一、JS相关
 
 ### 闭包
@@ -30,7 +17,7 @@ published: true
 
 3. **一个例子**
 
-```
+```js
 function makeCounter() {
   let count = 0; // 外层函数的局部变量
 
@@ -58,7 +45,7 @@ console.log(counter1()); // 3
 - **数据封装**
    隐藏内部变量，只暴露需要的接口。
 
-```
+```js
 function createUser(name) {
   let password = "secret"; // 私有变量
   return {
@@ -71,7 +58,7 @@ function createUser(name) {
 - **函数工厂**
    根据传入参数生成不同的函数。
 
-```
+```js
 function multiplier(factor) {
   return function(x) {
     return x * factor;
@@ -100,9 +87,166 @@ console.log(double(5)); // 10
 
 
 
+### 函数柯里化
+
+**1️⃣ 什么是函数柯里化？**
+
+**函数柯里化**就是把一个**多参数函数**，
+ 转化成**多个单参数函数**的过程。
+
+简单来说：
+
+> **一个接受多个参数的函数 → 变成一系列每次只接受一个参数的函数。**
+
+📌 例子对比
+
+普通函数：
+
+```js
+function add(a, b) {
+  return a + b;
+}
+
+console.log(add(2, 3)); // 5
+```
+
+柯里化后的函数：
+
+```js
+function add(a) {
+  return function(b) {
+    return a + b;
+  }
+}
+
+console.log(add(2)(3)); // 5
+```
+
+- 原来一次传两个参数 → 现在分两次传，每次一个参数。
+
+- `add(2)` 返回一个函数，等待第二个参数 `b`。
+
+  
+
+2️⃣ 使用箭头函数写柯里化
+
+```
+const add = a => b => a + b;
+
+console.log(add(2)(3)); // 5
+```
+
+> 箭头函数写法更加简洁，每一层都是一个返回函数。
+
+
+
+3️⃣ 多参数函数柯里化
+
+```
+const multiply = a => b => c => a * b * c;
+
+console.log(multiply(2)(3)(4)); // 24
+```
+
+- 这里函数 `multiply` 一次只能接收一个参数，但可以链式调用。
+- 柯里化的好处：**可以灵活复用参数**。
+
+
+
+4️⃣ 实际应用场景
+
+**a. 参数复用**
+
+```
+const add10 = add(10);
+console.log(add10(5)); // 15
+console.log(add10(20)); // 30
+```
+
+- 先固定一个参数 `10` → 得到一个新的函数 `add10`，可以多次调用。
+
+**b. 函数组合 & 高阶函数**
+
+```
+const log = prefix => message => console.log(`${prefix}: ${message}`);
+
+const info = log("INFO");
+const warn = log("WARN");
+
+info("This is info"); // INFO: This is info
+warn("This is warning"); // WARN: This is warning
+```
+
+- 柯里化让我们更容易**封装功能、固定参数**。
+
+
+
+5️⃣ 通用柯里化工具函数
+
+```
+function curry(fn) {
+  return function curried(...args) {
+    if (args.length >= fn.length) {
+      return fn.apply(this, args); // 参数足够直接执行
+    } else {
+      return function(...next) {
+        return curried.apply(this, args.concat(next));
+      }
+    }
+  }
+}
+
+// 使用
+function sum(a, b, c) {
+  return a + b + c;
+}
+
+const curriedSum = curry(sum);
+console.log(curriedSum(1)(2)(3)); // 6
+console.log(curriedSum(1, 2)(3)); // 6
+```
+
+- `fn.length` 是函数声明时的参数个数。
+- 可以实现**任意函数的柯里化**。
+- 支持一次传一个或多个参数，比较灵活。
+
+
+
+🔑 总结
+
+- **概念**：把多参数函数 → 变成一系列单参数函数。
+
+- **语法**：
+
+  - 普通函数：
+
+    ```
+    function add(a) { return function(b) { return a + b; } }
+    ```
+
+  - 箭头函数：
+
+    ```
+    const add = a => b => a + b;
+    ```
+
+- **优势**：
+
+  1. 参数复用（partial application）
+  2. 高阶函数组合
+  3. 更灵活、函数式编程风格
+
+----
+
+
+
 ### 原型链
 
-![image-20250924124212366](C:\Users\AKA小周\AppData\Roaming\Typora\typora-user-images\image-20250924124212366.png)
+![原型链](https://p9-juejin.byteimg.com/tos-cn-i-k3u1fbpfcp/d9afcd1172d340508d25c095b1103fac~tplv-k3u1fbpfcp-zoom-in-crop-mark:1512:0:0:0.awebp?)
+
+
+
+
 
 ****
 
@@ -119,7 +263,7 @@ console.log(double(5)); // 10
 
 **创建与使用 Promise **
 
-```
+```js
 const myPromise = new Promise((resolve, reject) => {
   const success = true;
 
@@ -150,9 +294,9 @@ myPromise
 - `.catch()` 处理失败结果
 - `.finally()` 总会执行
 
-- ** Promise 链式调用 **
+- **Promise 链式调用 **
 
-```
+```js
 new Promise((resolve) => {
   resolve(1);
 })
@@ -172,7 +316,7 @@ new Promise((resolve) => {
 
 **并行执行多个异步任务：**
 
-```
+```js
 const p1 = Promise.resolve(1);
 const p2 = Promise.resolve(2);
 
@@ -191,7 +335,7 @@ Promise.all([p1, p2])
 
 五、配合 async / await 使用
 
-```
+```js
 function delay(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -227,7 +371,7 @@ run();
 
 语法：
 
-```
+```js
 func.call(thisArg, arg1, arg2, ...)
 ```
 
@@ -236,7 +380,7 @@ func.call(thisArg, arg1, arg2, ...)
 
 例子：
 
-```
+```js
 function greet(greeting, punctuation) {
   console.log(greeting + ", " + this.name + punctuation);
 }
@@ -250,7 +394,7 @@ greet.call(person, "Hello", "!");
 
 语法：
 
-```
+```js
 func.apply(thisArg, [argsArray])
 ```
 
@@ -259,7 +403,7 @@ func.apply(thisArg, [argsArray])
 
 例子：
 
-```
+```js
 greet.apply(person, ["Hi", "!!"]); 
 // "Hi, Liu!!"
 ```
@@ -273,7 +417,7 @@ greet.apply(person, ["Hi", "!!"]);
 
 语法：
 
-```
+```js
 const boundFunc = func.bind(thisArg, arg1, arg2, ...)
 ```
 
@@ -282,7 +426,7 @@ const boundFunc = func.bind(thisArg, arg1, arg2, ...)
 
 例子：
 
-```
+```js
 const boundGreet = greet.bind(person, "Hey");
 boundGreet("?"); 
 // "Hey, Liu?"
@@ -292,16 +436,17 @@ boundGreet("?");
 
    1. **借用方法**
 
-      ```
-      const arr = [1, 2, 3];
-      console.log(Math.max.apply(null, arr)); // 3
-      ```
 
-      👉 用 `apply` 把数组当作参数传入。
-
-   2. **函数绑定**
-
+   ```js
+   const arr = [1, 2, 3];
+   console.log(Math.max.apply(null, arr)); // 3
    ```
+
+   👉 用 `apply` 把数组当作参数传入。
+
+   1. **函数绑定**
+
+   ```js
    const button = {
      text: "Click me",
      click() {
@@ -315,7 +460,7 @@ boundGreet("?");
 
    3. **继承构造函数属性**
 
-   ```
+   ```js
    function Parent(name) {
      this.name = name;
    }
@@ -616,17 +761,1802 @@ const throttledFn = throttle(() => {
 | 优点     | 减少无用调用             | 平滑处理高频事件         |
 | 缺点     | 触发延迟                 | 不保证最后一次触发回调   |
 
-****
+### 经典手撕
+
+####  1. 订阅发布
+
+```js
+class Bus{
+    constrcutor(){
+        this.events=[];
+    }
+
+    //订阅
+    on(event,callback){
+        if(!this.events[event])this.events[event]=[];
+        this.events[event].push(callback);
+    }
+
+    //取消订阅
+    off(event,callback){
+        if(!this.events[event])return;
+        this.events[event].fliter(cb => cb!== callback);
+    }
+
+    //发布
+    publish(event,...args){
+        if(!this.events[event])return;
+        this.events[event].forEach( callback =>
+                                   callback(...args);
+                                   })
+	}
+
+	//一次性订阅
+	once(event,callback){
+        const onceWrap=(...args)=>{
+            callback(...args);
+            this.off(event, onceWrap); 
+        }
+        this.on(event,onceWrap)
+        
+	}
+
+}
+```
 
 
 
-## 二、Vue相关
+#### 2. 手写promise
 
-### 插槽
+```js
+//promise.all
+Promise.myAll = function ( promises ) {
+  if(!Array.isArray(promises))return reject("传入参数错误")
+  if(!promises.length)return resolve([])
+  
+  let results=[]
+  let count=0;
+  
+  promises.forEach((p,index)=>{
+    Promise.resolve(p).then(value=>{
+      results[index]=value;
+      count++;
+      
+      if(count===promises.length)resolve(results)
+    }).catch(reject)
+  })
+  
+  
+}
+```
 
-## 三、React相关
 
-## 四、性能优化方案
+
+
+
+### 浅拷贝和深拷贝
+
+“浅拷贝（shallow copy）”和“深拷贝（deep copy）”是 JavaScript 中非常常见的概念，尤其在处理对象或数组时。
+
+**🧩 一、根本区别**
+
+| 类型       | 拷贝层级             | 结果                                       |
+| ---------- | -------------------- | ------------------------------------------ |
+| **浅拷贝** | 只拷贝**第一层属性** | 若属性值是对象，依然拷贝**引用**           |
+| **深拷贝** | 拷贝**所有层级**     | 完全复制一个新的对象，和原对象**互不影响** |
+
+
+
+**🔍 二、举个例子**
+
+```js
+const obj1 = {
+  name: "Liu",
+  info: { age: 25 }
+};
+
+// 浅拷贝
+const obj2 = { ...obj1 };
+
+// 修改内层对象
+obj2.info.age = 30;
+
+console.log(obj1.info.age); // ❗ 输出 30，被影响
+```
+
+👉 原因：`info` 是一个对象，被拷贝时只是复制了引用地址（浅拷贝）。
+
+
+
+**🧠 三、常见的浅拷贝方式**
+
+| 方法                       | 示例                       | 说明           |
+| -------------------------- | -------------------------- | -------------- |
+| `Object.assign()`          | `Object.assign({}, obj)`   | 复制第一层属性 |
+| 展开运算符 `...`           | `{ ...obj }` 或 `[...arr]` | 同样是浅拷贝   |
+| `Array.prototype.slice()`  | `arr.slice()`              | 数组的浅拷贝   |
+| `Array.prototype.concat()` | `[].concat(arr)`           | 浅拷贝数组     |
+
+
+
+**🌊 四、深拷贝的实现方式**
+
+✅ 1. JSON 方法（最简单）
+
+```js
+const obj2 = JSON.parse(JSON.stringify(obj1));
+```
+
+**优点：** 简单快捷
+ **缺点：**
+
+- 不能拷贝函数
+- 不能拷贝 `undefined` / `Symbol`
+- 日期对象会变成字符串
+- 原型链信息丢失
+
+✅ 2. 递归实现（手写深拷贝）
+
+```js
+function deepClone(obj) {
+  if (obj === null || typeof obj !== 'object') return obj;
+
+  const newObj = Array.isArray(obj) ? [] : {};
+  for (const key in obj) {
+    if (obj.hasOwnProperty(key)) {
+      newObj[key] = deepClone(obj[key]);
+    }
+  }
+  return newObj;
+}
+```
+
+✅ 3. 使用结构化克隆（现代方案）
+
+现代浏览器或 Node.js 17+ 支持：
+
+```js
+const obj2 = structuredClone(obj1);
+
+//使用实例
+const obj1 = {
+  name: "Liu",
+  age: 25,
+  info: { hobby: "coding" },
+  date: new Date(),
+  arr: [1, 2, 3],
+  map: new Map([["a", 1]]),
+  set: new Set([1, 2, 3])
+};
+
+const obj2 = structuredClone(obj1);
+
+obj2.info.hobby = "reading";
+
+console.log(obj1.info.hobby); // "coding" ✅ 没被影响
+console.log(obj1.date === obj2.date); // false ✅ 深拷贝成功
+
+//支持循环引用
+const obj = {};
+obj.self = obj; // 循环引用
+
+const clone = structuredClone(obj);
+console.log(clone.self === clone); // ✅ true，不报错
+
+
+```
+
+**优点**：
+
+- 完全深拷贝
+- 支持循环引用
+- 支持 Map、Set、Date、RegExp 等对象
+
+ **缺点**：
+
+- 不支持函数
+
+  
+
+## 二、CSS
+
+### 1. position
+
+1️⃣ `static`（默认值）
+
+- 默认值，元素按照文档流正常排列。
+- **top / left / right / bottom** 无效。
+
+```
+div {
+  position: static;
+  top: 10px; /* 无效 */
+}
+```
+
+2️⃣`relative`（相对定位）
+
+- 元素仍占据原本文档流位置，但可以通过 `top/left/right/bottom` **相对自身原位置**进行偏移。
+- 其他元素的位置不会改变。
+
+```
+div {
+  position: relative;
+  top: 10px; /* 向下偏移10px */
+  left: 20px; /* 向右偏移20px */
+}
+```
+
+✅ 优点：不会脱离文档流，适合微调位置。
+
+
+
+3️⃣`absolute`（绝对定位）
+
+- 元素脱离文档流，不占据空间。
+- **定位基准**：
+  - 如果父元素有 `position` 为 `relative/absolute/fixed/sticky`，则以最近的定位父元素为参考。
+  - 如果没有，则以 **body（html）** 为参考。
+- 可以使用 `top/left/right/bottom` 精确控制位置。
+
+```
+.parent {
+  position: relative;
+}
+.child {
+  position: absolute;
+  top: 0;
+  right: 0;
+}
+```
+
+✅ 常用场景：弹窗、下拉菜单、角标等。
+
+
+
+4. `fixed`（固定定位）
+
+- 元素脱离文档流，并相对于 **浏览器窗口** 固定位置，不随滚动条滚动而改变。
+
+```
+div {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+}
+```
+
+✅ 常用场景：悬浮导航、回到顶部按钮、固定底栏。
+
+
+
+5. `sticky`（粘性定位）
+
+- 元素在 **跨越滚动区间时表现为 relative/absolute 的结合**，相对于最近的可滚动容器，且不脱离文档流
+- 当滚动到阈值时，元素会固定；其他时候像 `relative` 一样随文档流。
+
+```
+div {
+  position: sticky;
+  top: 0; /* 滚动到0px时固定 */
+}
+```
+
+✅ 常用场景：表头固定、吸顶导航。
+
+
+
+二、`position` 属性结合 `z-index`
+
+- 只有 `position` 值为 **relative/absolute/fixed/sticky** 的元素，`z-index` 才有效。
+- `z-index` 控制元素堆叠顺序，值越大越靠前。
+
+```
+div {
+  position: absolute;
+  z-index: 10;
+}
+```
+
+### 2. 移动端适配
+
+#### 2.1 媒体查询（Media Queries）
+
+CSS 里最基础的适配手段，根据设备宽度、分辨率等条件，应用不同的样式。
+
+```css
+/* 手机小屏幕 */
+@media (max-width: 480px) {
+  body {
+    font-size: 14px;
+  }
+}
+
+/* 平板 */
+@media (min-width: 481px) and (max-width: 768px) {
+  body {
+    font-size: 16px;
+  }
+}
+
+/* PC大屏 */
+@media (min-width: 769px) {
+  body {
+    font-size: 18px;
+  }
+}
+```
+
+✅ 优点：灵活、可控
+ ❌ 缺点：样式表容易膨胀，需要手动维护多个断点
+
+------
+
+#### 2.2 REM/EM 布局（相对单位）
+
+通过相对单位配合 `meta viewport` 进行适配。
+
+```css
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+html {
+  font-size: 16px; /* 基准大小 */
+}
+
+body {
+  font-size: 1rem; /* 16px */
+}
+
+h1 {
+  font-size: 2rem; /* 32px */
+}
+```
+
+- **REM**：相对于根元素 `<html>` 的字体大小
+- **EM**：相对于父元素的字体大小
+
+📌 做法：可以配合 JS 动态计算屏幕宽度改变 `html` 的 font-size，使页面自适应不同屏幕。
+
+```js
+function setRem() {
+  const html = document.documentElement;
+  const width = html.clientWidth;
+  html.style.fontSize = width / 10 + 'px'; // 设计稿宽度 375px → 1rem = 37.5px
+}
+window.addEventListener('resize', setRem);
+setRem();
+```
+
+------
+
+#### 2.3 百分比 / 弹性盒子（Flex）
+
+- **百分比**：宽度、间距用 `%` 表示，相对父容器自适应。
+- **Flex 布局**：非常适合移动端一维布局。
+
+```css
+.container {
+  display: flex;
+  justify-content: space-between;
+}
+.item {
+  flex: 1; /* 平分空间 */
+  margin: 0 5px;
+}
+```
+
+------
+
+#### 2.4 栅格系统（Grid / UI 框架）
+
+- 常用的移动端 UI 框架如 **Vant**, **Ant Design Mobile**, **WeUI**, **Bootstrap（响应式栅格）**
+- 栅格可以快速实现多列布局、间距自适应、隐藏显示元素等功能。
+
+```html
+<div class="row">
+  <div class="col-6">左侧</div>
+  <div class="col-6">右侧</div>
+</div>
+```
+
+------
+
+#### 2.5. 图片 / 字体自适应
+
+- **图片**：
+
+```css
+img {
+  max-width: 100%;
+  height: auto;
+}
+```
+
+- **字体**：
+  - 使用 `rem` 或 `vw` 单位
+
+```css
+h1 {
+  font-size: 5vw; /* 视口宽度的 5% */
+}
+```
+
+------
+
+#### 2.6 视口（Viewport）设置
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+```
+
+- **width=device-width** → 宽度与设备宽度一致
+- **initial-scale=1.0** → 初始缩放比例
+- **user-scalable=no** → 禁止用户缩放
+
+------
+
+#### 2.7 移动端适配工具
+
+- **PostCSS + px2rem**：自动将 px 转为 rem
+- **Lib-flexible**：阿里出品，动态计算根字体大小
+- **vw/vh**：CSS 单位，根据视口宽高适配
+
+------
+
+#### 2.8移动端适配的思路
+
+1. **先设计移动端**：先做移动端页面，再做平板和 PC（Mobile First）
+2. **使用相对单位**：避免绝对像素，布局和字体尽量用 `rem`, `%`, `vw`
+3. **合理断点**：常见断点 375px（小手机）、768px（平板）、1024px（PC）
+4. **测试真机**：浏览器模拟器无法完全覆盖真实机型，需要在 iOS/Android 真机上测试
+
+
+
+## 三、Vue
+
+### 1. Diff算法
+
+**🧠 Diff 算法的核心思想**
+
+Vue 的更新机制基于 “**虚拟 DOM（Virtual DOM）**”。
+ 当数据更新时，Vue 会：
+
+1. 重新渲染出一个新的 **虚拟节点树（VNode Tree）**
+2. 与旧的 VNode 树做 **Diff 对比**
+3. 根据最小的差异去修改真实 DOM（这一步称为 **Patch**）
+
+Diff 的目标就是：
+ 👉 **尽可能少地修改真实 DOM，以达到性能最优。**
+
+
+
+**⚙️ Vue Diff 的主要流程（以 Vue2 为例）**
+
+Vue2 的 Diff 算法借鉴自 **React 的 Diff 思想**，并做了针对性优化。
+
+**1️⃣同层比较**
+
+Vue 的 Diff 算法只会在同层级节点之间比较：
+
+```
+<div>
+  <span></span>
+</div>
+
+<p></p>
+```
+
+即使 `<div>` 变成 `<p>`，也不会去比对 `<span>` 与 `<p>`。
+ **不同层级之间不会比较**，这大大降低了复杂度（O(n³) → O(n)）。
+
+
+
+**2️⃣比较流程（核心函数：`patch(oldVNode, newVNode)`）**
+
+Vue 通过 `patch` 函数递归对比新旧节点：
+
+🧩 Step 1：节点类型不同 → 直接替换
+
+如果 `oldVNode.tag !== newVNode.tag`，则直接销毁旧节点，创建新节点。
+
+🧩 Step 2：节点类型相同 → 比对属性
+
+如果标签相同，则只比对：
+
+- 属性变化（class, style, id...）
+- 事件变化（onClick 等）
+
+🧩 Step 3：比对子节点（核心部分）
+
+对比 `oldChildren` 与 `newChildren` 时，Vue 采用 **双端比较（双指针）算法**。
+
+**🔁 双端比较算法（Vue2 核心）**
+
+假设：
+
+```
+oldChildren = [a, b, c, d]
+newChildren = [d, b, a, c]
+```
+
+Vue 会维护四个指针：
+
+```
+oldStart, oldEnd, newStart, newEnd
+```
+
+每轮比较：
+
+- oldStart vs newStart
+- oldEnd vs newEnd
+- oldStart vs newEnd
+- oldEnd vs newStart
+
+匹配成功 → 移动指针
+ 匹配失败 → 尝试用 key 快速定位已有节点 → 移动或创建新节点
+
+这种方式比“全量查找”效率高得多，复杂度接近 **O(n)**。
+
+
+
+**🚀 Vue3 的 Diff 优化**
+
+Vue3 对 Diff 进行了重写（基于 **静态标记 + 快速路径优化**）：
+
+**1️⃣ 静态标记（Patch Flag）**
+
+在模板编译阶段，Vue3 编译器会为动态节点打上“标记”，
+ 只在运行时对这些节点进行 Diff。
+
+例：
+
+```
+<div>静态内容</div>
+<p>{{ msg }}</p>
+```
+
+→ 编译结果：
+
+- `<div>` 无标记（跳过比较）
+- `<p>` 有动态标记（仅比较文本）
+
+✅ 优化：跳过静态部分的比较，大大减少计算量。
+
+
+
+**2️⃣ Fragment / Block Tree 优化**
+
+Vue3 引入 **Block Tree**，在 Diff 时只追踪可能变化的节点，
+ 减少无关节点的遍历。
+
+
+
+**3️⃣最长递增子序列（LIS）优化移动节点**
+
+Vue3 在列表 Diff 中使用 **最长递增子序列（LIS）算法** 来最小化 DOM 移动。
+
+例：
+
+```
+old = [a, b, c, d]
+new = [b, a, d, c]
+```
+
+通过 LIS 算法，可以找出 `[b, d]` 不需移动，只移动剩下的节点。
+
+👉 结果：减少节点移动次数，提升渲染性能。
+
+
+
+**📊 Vue2 vs Vue3 Diff 对比总结**
+
+| 特性          | Vue2     | Vue3                       |
+| ------------- | -------- | -------------------------- |
+| Diff 方式     | 双端比较 | 静态标记 + 双端比较 + LIS  |
+| 静态节点优化  | ❌ 无     | ✅ 编译期标记，跳过静态节点 |
+| Fragment 支持 | ❌        | ✅                          |
+| 性能          | 优       | 更优（2~3倍）              |
+
+
+
+💡 总结一句话
+
+> Vue 的 Diff 算法核心是 **"同层比较 + 双端指针 + Key + 静态标记 + LIS 优化"**，
+>  目标是尽可能减少真实 DOM 的更新和移动，从而获得极高的性能。
+
+### 2. 组件通信方式
+
+
+
+## 四、React
+
+### 1.生命周期
+
+
+
+### 2. 常见的Hook
+
+#### 2.1 **状态管理类 Hook**
+
+**1️⃣ `useState`**
+
+**作用：** 定义一个组件内部的响应式状态变量。
+ **语法：**
+
+```
+const [state, setState] = useState(initialValue)
+```
+
+**参数：**
+
+- `initialValue`: 初始值（可以是任意类型，也可以是函数延迟初始化）
+   **返回值：**
+- `[state, setState]`: 当前状态值和更新状态的函数
+
+**使用场景：**
+
+- 管理组件内的局部状态，如表单输入、开关状态、计数器等。
+
+**示例：**
+
+```js
+const [count, setCount] = useState(0)
+setCount(prev => prev + 1)
+
+//使用useState修改数组，需要把state当中的数据视为只读的
+//不应该使用类似于 arr[0] = 'bird' 这样的方式来重新分配数组中的元素
+//也不应该使用会直接修改原始数组的方法，例如 push() 和 pop()
+
+//1、在数组添加元素，推荐使用[...arr]数组展开语法
+
+const [artists,serArtists]=useState(["a","b"])
+setArtists( // 替换 state
+  [ // 是通过传入一个新数组实现的
+    ...artists, // 新数组包含原数组的所有元素
+    { id: nextId++, name: name } // 并在末尾添加了一个新的元素
+  ]
+);
+
+//2、在数组中删除元素
+setArtists(
+  artists.filter(a =>
+    a.id !== artist.id
+  )
+);
+
+//3、修改特定元素
+let initialShapes = [
+  { id: 0, type: 'circle', x: 50, y: 100 },
+  { id: 1, type: 'square', x: 150, y: 100 },
+  { id: 2, type: 'circle', x: 250, y: 100 },
+];
+
+const [shapes, setShapes] = useState(initialShapes);
+
+function handleClick() {
+  const nextShapes = shapes.map(shape => {
+    if (shape.type === 'square') {
+      // 不作改变
+      return shape;
+    } else {
+      // 返回一个新的圆形，位置在下方 50px 处
+      return {
+        ...shape,
+        y: shape.y + 50,
+      };
+    }
+  });
+  // 使用新的数组进行重渲染
+  setShapes(nextShapes);
+}
+
+//注意：下面的写法是错误的，这是由于这里的运算是一个是浅拷贝，
+//nextList[0] 和 list[0] 指向了同一个对象。因此，通过改变 nextList[0].seen，list[0].seen 的值也被改变了。
+const nextList = [...list];
+nextList[0].seen = true; // 问题：直接修改了 list[0] 的值
+setList(nextList);
+
+
+```
+
+----
+
+2️⃣ `useReducer`
+
+**作用：** 管理复杂状态逻辑（类似 Redux 思想）
+ **语法：**
+
+```
+const [state, dispatch] = useReducer(reducer, initialState)
+```
+
+**参数：**
+
+- `reducer(state, action)`：定义状态如何根据 action 变化
+- `initialState`：初始状态值
+
+**返回值：**
+
+- `[state, dispatch]`：**state**：当前状态   **dispatch**：用于触发状态更新的函数
+
+**使用场景：**
+
+- 状态更新逻辑复杂、依赖多个条件时
+- 适用于中大型组件逻辑清晰化
+
+**示例：**
+
+```js
+function reducer(state, action) {
+  switch (action.type) {
+    case 'increment':
+      return { count: state.count + 1 }
+    case 'decrement':
+      return { count: state.count - 1 }
+    default:
+      return state
+  }
+}
+
+export default function Counter() {
+  const [state, dispatch] = useReducer(reducer, { count: 0 })
+
+  return (
+    <div style={{ textAlign: 'center', marginTop: 50 }}>
+      <h2>Count: {state.count}</h2>
+      <button onClick={() => dispatch({ type: 'decrement' })}>-</button>
+      <button onClick={() => dispatch({ type: 'increment' })}>+</button>
+    </div>
+  )
+}
+```
+
+
+
+#### 2.2 副作用类 Hook
+
+1️⃣ `useEffect`
+
+**作用：** 执行副作用逻辑（如请求、DOM 操作、定时器、订阅等）
+ **语法：**
+
+```js
+useEffect(() => {
+  // 副作用逻辑
+  return () => { /* 清理逻辑（卸载时）*/ }
+}, [deps])
+```
+
+**参数：**
+
+- `callback`: 要执行的副作用函数
+- `deps`: 依赖数组，决定执行时机
+
+
+
+**执行时机：**
+
+🌟**没有依赖数组**
+
+```
+useEffect(() => {
+  console.log("每次渲染都会执行")
+})
+```
+
+> ✅ 执行时机：**组件初次挂载** + **每次更新后**。
+>  常用于：调试日志、监听 props/state 的变化。
+
+---
+
+🌟**空依赖数组 `[]`**
+
+```
+useEffect(() => {
+  console.log("只执行一次")
+}, [])
+```
+
+> ✅ 执行时机：**仅挂载时执行一次**。
+>  常用于：
+
+- 初始化操作（如网络请求）
+- 注册全局事件监听
+
+----
+
+🌟**指定依赖 `[a, b]`**
+
+```
+useEffect(() => {
+  console.log("当 a 或 b 变化时执行")
+}, [a, b])
+```
+
+> ✅ 执行时机：当依赖项变化时重新执行。
+>  常用于：
+
+- 根据依赖变化重新请求或更新数据
+
+----
+
+🌟**带返回函数（清理副作用）**
+
+```
+useEffect(() => {
+  const id = setInterval(() => console.log('tick'), 1000)
+  return () => clearInterval(id)
+}, [])
+```
+
+> ✅ 返回的函数在组件卸载时执行。
+>  常用于：
+
+- 清除定时器
+- 取消事件监听
+- 断开网络订阅
+
+**常见副作用：**
+
+- 数据请求
+- 事件绑定
+- 订阅与清理
+
+----
+
+4️⃣ `useLayoutEffect`
+
+**作用：** 类似 `useEffect`，但在 **DOM 更新后、浏览器绘制前** 同步执行。
+ **区别：**
+
+- `useEffect`: 异步，不阻塞渲染（推荐默认使用）
+- `useLayoutEffect`: 同步执行，阻塞绘制（用于测量 DOM）
+
+**使用场景：**
+
+- 当需要读取/同步 DOM 布局（如元素大小、滚动位置）时。
+
+
+
+**⚙️ 语法**
+
+```js
+useLayoutEffect(() => {
+  // 副作用逻辑（同步执行）
+  return () => {
+    // 清理逻辑
+  }
+}, [deps])
+```
+
+- `deps` 与 `useEffect` 一样，控制副作用的执行时机。
+- 返回函数用于清理副作用。
+
+
+
+**🔍 执行时机对比**
+
+```
+React 渲染流程：
+render -> commit DOM -> useLayoutEffect -> 浏览器绘制 -> useEffect
+```
+
+- `useLayoutEffect` 在 **commit DOM 后**立即执行
+- `useEffect` 在 **浏览器绘制后**执行
+- 如果副作用涉及 DOM 测量或布局调整，推荐 `useLayoutEffect`
+
+
+
+**💡 使用场景**
+
+1️⃣ 测量 DOM
+
+```js
+import { useLayoutEffect, useRef, useState } from 'react'
+
+function Box() {
+  const ref = useRef()
+  const [width, setWidth] = useState(0)
+
+  useLayoutEffect(() => {
+    setWidth(ref.current.offsetWidth)
+  }, [])  // 组件挂载后执行一次
+
+  return (
+    <div ref={ref}>
+      <p>盒子宽度: {width}px</p>
+    </div>
+  )
+}
+```
+
+- 这里用 `useEffect` 可能会出现闪烁，因为浏览器先绘制了初始宽度再更新。
+- `useLayoutEffect` 确保宽度更新在绘制前完成。
+
+
+
+2️⃣ 修改 DOM 样式或位置
+
+```js
+useLayoutEffect(() => {
+  const box = boxRef.current
+  box.style.transform = 'translateX(50px)'
+}, [])
+```
+
+- 用于动画或布局同步调整
+- 避免页面闪烁或不一致
+
+
+
+3️⃣ 读取并同步更新布局
+
+```js
+useLayoutEffect(() => {
+  const box = boxRef.current
+  const height = box.offsetHeight
+  setBoxHeight(height)
+}, [content])
+```
+
+- 当内容 `content` 改变时，读取真实 DOM 高度并同步更新状态
+- 用 `useEffect` 会有渲染闪烁问题
+
+
+
+⚠️ 注意事项
+
+1. **不要滥用**
+
+- `useLayoutEffect` 会阻塞渲染，过多使用会影响性能
+- 默认使用 `useEffect`，只有在需要同步操作 DOM 或布局时才用
+
+1. **服务器端渲染（SSR）**
+
+- `useLayoutEffect` 在服务端没有 DOM，会发出警告
+- 可条件使用或改用 `useEffect`
+
+**示例：**
+
+```js
+useLayoutEffect(() => {
+  const height = divRef.current.offsetHeight
+  console.log(height)
+})
+```
+
+
+
+#### 2.3 引用与缓存类 Hook
+
+**1️⃣ `useRef`**
+
+**作用：** 保存一个在组件整个生命周期中持续存在的可变值。
+ **语法：**
+
+```js
+const ref = useRef(initialValue)
+```
+
+**返回值：** `{ current: initialValue }`
+
+**使用场景：**
+
+- 获取 DOM 节点引用
+- 存储任意可变数据而不触发重新渲染
+
+**示例：**
+
+```js
+const inputRef = useRef()
+useEffect(() => {
+  inputRef.current.focus()
+}, [])
+```
+
+
+
+**2️⃣ `useMemo`**
+
+**作用：** 对计算结果进行缓存，避免重复计算。
+ **语法：**
+
+```js
+const memoizedValue = useMemo(() => computeExpensiveValue(a, b), [a, b])
+```
+
+**参数：**
+
+- 第一个参数是计算函数
+- 第二个参数是依赖项数组
+
+**使用场景：**
+
+- 计算量大的数据
+- 避免组件频繁渲染时重复计算
+
+**3️⃣ `useCallback`**
+
+**作用：** 缓存函数引用，防止子组件不必要的重新渲染。
+ **语法：**
+
+```js
+const memoizedFn = useCallback(() => { doSomething(a, b) }, [a, b])
+```
+
+**区别：**
+
+- `useMemo` → 缓存 **结果值**
+- `useCallback` → 缓存 **函数引用**
+
+**使用场景：**
+
+- 当函数被传递给子组件时，避免子组件重复渲染。
+
+#### 2.4 上下文与引用
+
+**`useContext`**
+
+**作用：** 获取 React Context 中共享的值。
+ **语法：**
+
+```js
+const value = useContext(MyContext)
+```
+
+
+
+**参数与返回值**
+
+| 项           | 说明                                                         |
+| ------------ | ------------------------------------------------------------ |
+| **参数**     | `context` 对象，由 `createContext()` 返回                    |
+| **返回值**   | 当前上下文的值（由最近的 `Provider` 提供）                   |
+| **更新方式** | 当 Provider 的 `value` 变化时，所有使用该 context 的组件都会重新渲染 |
+
+
+
+**使用场景：**
+
+- 父子组件之间共享主题、用户信息、语言等状态
+
+`useContext` 是 React 的内置 Hook，用于**订阅上下文（Context）**。
+
+```
+const value = useContext(MyContext);
+```
+
+它让你能够在函数组件中直接读取由 `React.createContext` 创建的上下文对象的值。
+
+
+
+**🌟使用步骤（3 步走）**
+
+**1️⃣ 创建 Context**
+
+```js
+import { createContext } from "react";
+
+export const ThemeContext = createContext("light");
+```
+
+> 这里的`createContext` 的参数 `"light"` 是默认值，当组件树中没有 Provider 时会使用这个默认值。
+
+
+
+**2️⃣ 提供 Context 值（Provider）**
+
+```js
+import { ThemeContext } from "./ThemeContext";
+
+function App() {
+  return (
+    <ThemeContext.Provider value="dark">
+      <Toolbar />
+    </ThemeContext.Provider>
+  );
+}
+```
+
+> Provider 是一个组件，它接受一个 `value` 属性。
+>  所有被包裹的子组件都可以通过 `useContext(ThemeContext)` 访问这个值。
+
+
+
+**3️⃣ 消费 Context 值（useContext）**
+
+```js
+import { useContext } from "react";
+import { ThemeContext } from "./ThemeContext";
+
+function Toolbar() {
+  const theme = useContext(ThemeContext);
+
+  return <div>当前主题：{theme}</div>;
+}
+```
+
+✅ 结果：
+ `Toolbar` 组件中能直接拿到 `"dark"`。
+
+
+
+**一个完整示例（父子多层传递）**
+
+```js
+import React, { createContext, useContext, useState } from "react";
+
+// 1. 创建 Context
+const ThemeContext = createContext();
+
+function App() {
+  const [theme, setTheme] = useState("light");
+
+  return (
+    // 2. 提供 Context 值
+    <ThemeContext.Provider value={{ theme, setTheme }}>
+      <Page />
+    </ThemeContext.Provider>
+  );
+}
+
+function Page() {
+  return (
+    <div>
+      <h1>🌗 Context 示例</h1>
+      <ThemeSwitcher />
+    </div>
+  );
+}
+
+function ThemeSwitcher() {
+  // 3. 消费 Context 值
+  const { theme, setTheme } = useContext(ThemeContext);
+
+  return (
+    <div>
+      <p>当前主题：{theme}</p>
+      <button onClick={() => setTheme(theme === "light" ? "dark" : "light")}>
+        切换主题
+      </button>
+    </div>
+  );
+}
+
+export default App;
+```
+
+✅ 效果：
+
+- 所有子组件都能访问 `theme`；
+- 只需修改 Provider 中的值，所有订阅了该 Context 的组件会自动更新。
+
+✅ 特性
+
+- 没有 Provider 时，会使用 `createContext(defaultValue)` 的默认值；
+- 不需要手动订阅或取消订阅；
+- 能让组件树中任意层级共享状态。
+
+⚠️ 注意
+
+1. `useContext` **不会**让组件跳过重新渲染；
+   - 如果 `Provider` 的 `value` 改变，所有使用它的组件都会重新渲染。
+2. 不建议在大型应用中过度使用全局 Context；
+   - 太多 Context 更新会影响性能；
+   - 更适合用来存储全局配置（如主题、语言、登录信息等）。
+
+
+
+**🧩 搭配 `useReducer` 使用（常见高级用法）**
+
+在复杂状态管理中，常会把 `useReducer` 与 `useContext` 搭配使用，做出一个简易的全局 store：
+
+```tsx
+import { createContext, useReducer, useContext } from "react";
+
+const CountContext = createContext();
+
+function countReducer(state, action) {
+  switch (action.type) {
+    case "increment":
+      return state + 1;
+    case "decrement":
+      return state - 1;
+    default:
+      return state;
+  }
+}
+
+export function CountProvider({ children }) {
+  const [count, dispatch] = useReducer(countReducer, 0);
+  return (
+    <CountContext.Provider value={{ count, dispatch }}>
+      {children}
+    </CountContext.Provider>
+  );
+}
+
+export function useCount() {
+  return useContext(CountContext);
+}
+```
+
+使用：
+
+```tsx
+function Counter() {
+  const { count, dispatch } = useCount();
+
+  return (
+    <div>
+      <p>Count: {count}</p>
+      <button onClick={() => dispatch({ type: "increment" })}>+</button>
+      <button onClick={() => dispatch({ type: "decrement" })}>-</button>
+    </div>
+  );
+}
+```
+
+
+
+#### 2.5 自定义与高级 Hook
+
+1️⃣`useImperativeHandle`
+
+**作用：** 与 `forwardRef` 搭配使用，定义暴露给父组件的 ref 接口。
+ **语法：**
+
+```js
+useImperativeHandle(ref, () => ({
+  focus: () => inputRef.current.focus()
+}))
+```
+
+**使用场景：**
+
+- 让父组件可以通过 ref 调用子组件内部的方法。
+
+
+
+2️⃣ `useDebugValue`
+
+**作用：** 仅用于自定义 Hook，在 React DevTools 中显示调试信息。
+
+
+
+3️⃣`useId`
+
+**作用：** 在 SSR（服务端渲染）中生成唯一 ID，避免冲突。
+ **示例：**
+
+```tsx
+const id = useId()
+<input id={id} />
+<label htmlFor={id}>Name</label>
+```
+
+
+
+#### 🎯 总结表格
+
+| Hook                  | 参数            | 返回值            | 场景             |
+| --------------------- | --------------- | ----------------- | ---------------- |
+| `useState`            | 初始值          | [state, setState] | 组件状态管理     |
+| `useReducer`          | reducer, 初始值 | [state, dispatch] | 复杂状态逻辑     |
+| `useEffect`           | 回调, 依赖      | 无                | 异步副作用       |
+| `useLayoutEffect`     | 回调, 依赖      | 无                | DOM 操作同步     |
+| `useRef`              | 初始值          | ref 对象          | DOM 或持久值     |
+| `useMemo`             | 计算函数, 依赖  | 缓存值            | 性能优化         |
+| `useCallback`         | 函数, 依赖      | 缓存函数          | 子组件优化       |
+| `useContext`          | context 对象    | context 值        | 全局状态共享     |
+| `useImperativeHandle` | ref, 回调       | 自定义暴露方法    | 父组件操作子组件 |
+| `useId`               | 无              | 唯一 ID           | SSR 唯一标识     |
+
+
+
+### 3. 组件通信方式
+
+在 **React** 当中，**组件之间的信息（数据）传递** 是整个框架的核心逻辑之一。
+ React 遵循 **单向数据流（one-way data flow）** 原则：
+
+> 数据只能从父组件传到子组件，子组件不能直接修改父组件的数据。
+
+不过 React 提供了多种机制来实现灵活的 **组件通信**。下面我会系统地讲解每种方式及其适用场景👇
+
+#### 3.1 父传子（Props 传递）
+
+✅ 最常见、最基础的通信方式
+
+父组件通过 **props** 将数据或函数传递给子组件。
+
+```js
+function Child({ name, onSayHi }) {
+  return (
+    <div>
+      <p>我是子组件，我的名字是 {name}</p>
+      <button onClick={onSayHi}>和父组件打招呼</button>
+    </div>
+  );
+}
+
+function Parent() {
+  const handleHi = () => alert("你好，我是父组件");
+  return <Child name="React" onSayHi={handleHi} />;
+}
+```
+
+📌 **特点：**
+
+- 单向流动（父 → 子）
+- 子组件不能修改父组件传来的值
+- 可通过传函数“反向通信”
+
+
+
+#### 3.2 子传父（回调函数传递）
+
+React 没有直接的“子传父”，但可以通过 **props 回调** 实现：
+
+> 父组件把一个函数传给子组件，子组件调用时把数据回传。
+
+```js
+function Child({ onSend }) {
+  return (
+    <button onClick={() => onSend("来自子组件的消息")}>发送数据</button>
+  );
+}
+
+function Parent() {
+  const handleReceive = (msg) => console.log("父组件接收到：", msg);
+
+  return <Child onSend={handleReceive} />;
+}
+```
+
+📌 **特点：**
+
+- 本质仍是 props，只不过传的是函数。
+- 常用于表单、事件回调。
+
+
+
+#### 3.3 兄弟组件通信
+
+兄弟组件无法直接传递数据，但可以通过 **共同的父组件** 来间接传递：
+
+```js
+function BrotherA({ onSend }) {
+  return <button onClick={() => onSend("来自A的消息")}>A 发送</button>;
+}
+
+function BrotherB({ message }) {
+  return <p>B 接收到：{message}</p>;
+}
+
+function Parent() {
+  const [msg, setMsg] = useState("");
+  return (
+    <>
+      <BrotherA onSend={setMsg} />
+      <BrotherB message={msg} />
+    </>
+  );
+}
+```
+
+📌 **特点：**
+
+- 通过“状态提升（lifting state up）”共享状态。
+- 小型项目很常见。
+
+
+
+#### 3.4 跨层级通信（Context）
+
+当组件层级很深时，一层层通过 props 传递很繁琐。
+ 这时可以使用 **Context（上下文）**：
+
+```js
+import React, { createContext, useContext, useState } from "react";
+
+const UserContext = createContext();
+
+function Child() {
+  const user = useContext(UserContext);
+  return <p>子组件读取到用户名：{user}</p>;
+}
+
+function Parent() {
+  const [user] = useState("Liu");
+  return (
+    <UserContext.Provider value={user}>
+      <Child />
+    </UserContext.Provider>
+  );
+}
+```
+
+📌 **特点：**
+
+- 实现“跨组件层级”的共享状态。
+- 常用于主题、语言、登录信息。
+- 类似 Vue 的 `provide / inject`。
+
+
+
+#### 3.5 全局状态管理（Redux、Zustand、Recoil、Jotai）
+
+当项目变大，跨层通信复杂时，可以使用全局状态管理工具。
+
+示例：Redux（经典写法）
+
+```js
+// store.js
+import { createStore } from "redux";
+
+const reducer = (state = { count: 0 }, action) => {
+  switch (action.type) {
+    case "INCREMENT": return { count: state.count + 1 };
+    default: return state;
+  }
+};
+
+export const store = createStore(reducer);
+// App.jsx
+import { Provider, useDispatch, useSelector } from "react-redux";
+import { store } from "./store";
+
+function Counter() {
+  const count = useSelector(s => s.count);
+  const dispatch = useDispatch();
+  return (
+    <div>
+      <p>{count}</p>
+      <button onClick={() => dispatch({ type: "INCREMENT" })}>+</button>
+    </div>
+  );
+}
+
+export default function App() {
+  return (
+    <Provider store={store}>
+      <Counter />
+    </Provider>
+  );
+}
+```
+
+📌 **特点：**
+
+- 适合大型应用。
+- 任何组件都可访问/修改全局状态。
+- 状态统一可控、可追踪。
+
+
+
+#### 3.6 Refs（父访问子实例）
+
+如果要在父组件中直接访问子组件内部的 DOM 或方法，可以用 **ref**。
+
+```js
+function Child(props, ref) {
+  const inputRef = useRef();
+  React.useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current.focus()
+  }));
+  return <input ref={inputRef} />;
+}
+const ForwardedChild = React.forwardRef(Child);
+
+function Parent() {
+  const childRef = useRef();
+  return (
+    <>
+      <ForwardedChild ref={childRef} />
+      <button onClick={() => childRef.current.focus()}>聚焦子组件</button>
+    </>
+  );
+}
+```
+
+📌 **特点：**
+
+- 用于操作 DOM 或子组件的暴露方法。
+- 不建议用于数据传递（违背单向流）。
+
+
+
+#### 3.7 事件总线（不推荐，但可用）
+
+在某些特殊情况下，可以使用第三方库（如 mitt、eventemitter3）创建事件总线：
+
+```js
+import mitt from "mitt";
+export const bus = mitt();
+
+// 组件A
+bus.emit("update", "来自A的数据");
+
+// 组件B
+bus.on("update", data => console.log(data));
+```
+
+📌 **特点：**
+
+- 简单暴力，但破坏数据流。
+- 可在小项目或调试阶段使用。
+
+#### 3.8 总结对比
+
+| 通信方式      | 方向        | 适用场景     | 特点           |
+| ------------- | ----------- | ------------ | -------------- |
+| Props         | 父 → 子     | 基本传值     | 简单直观       |
+| 回调函数      | 子 → 父     | 子上报事件   | 单向可控       |
+| 状态提升      | 兄弟间      | 局部通信     | 中小项目       |
+| Context       | 跨层级      | 主题/用户    | 无需层层传     |
+| Redux/Zustand | 全局        | 大型项目     | 全局可控       |
+| Ref           | 父 → 子实例 | 操作方法/DOM | 不建议用于状态 |
+| 事件总线      | 任意        | 临时通信     | 破坏单向流     |
+
+
+
+### 4.Diff算法
+
+**1️⃣核心思想**
+
+React 的 Diff 目标与 Vue 相同：**在数据变化时尽可能少地修改真实 DOM**。
+ React 的 Diff 核心原则是：
+
+1. **同类型组件才会更新，不同类型直接替换**
+   - 不同标签或组件类型 → 卸载旧节点 → 创建新节点
+   - 相同类型 → 更新 props 和子节点
+2. **尽量局部更新**
+   - React 不会递归比较整个 DOM 树，而是**从根节点开始向下递归，只比较变化部分**
+3. **通过 key 优化列表节点**
+   - key 唯一标识同级节点，帮助 React 快速定位和重用节点
+
+
+
+**2️⃣ Diff 流程**
+
+React 的 Diff 主要分为两步：
+
+1. **树比较（Tree Diff）**
+
+- React 假设 **不同类型的节点差异很大**，直接替换
+- 同类型节点则进入 **属性比较 + 子节点比较**
+- 复杂度：**O(n)**，没有使用完全的动态规划（减少了计算量）
+
+2. **列表比较（List Diff / Reconciliation）**
+
+- 对于数组类型的 children，React 有两种情况：
+
+a. **无 key 的节点**
+
+- 直接按照索引比较（index-based）
+- 新旧节点顺序不同 → 会销毁旧节点重新创建
+- 简单但可能导致不必要的 DOM 重新渲染
+
+b. **有 key 的节点**
+
+- React 会构建一个 key → 节点的映射表
+- 遍历新节点：
+  1. 找到对应 key → 重用节点并更新 props
+  2. 找不到 → 创建新节点
+- 遍历旧节点：
+  1. key 不在新节点 → 删除节点
+- 这个过程 **最小化 DOM 移动**
+- **复杂度：O(n)**
+
+
+
+3️⃣ React Diff 特点总结
+
+| 特性     | React Diff                                         |
+| -------- | -------------------------------------------------- |
+| 树比较   | 同类型递归，不同类型直接替换                       |
+| 列表比较 | 有 key → 快速映射，无 key → 按索引                 |
+| 复杂度   | O(n)                                               |
+| 优化策略 | key 重用，批量更新，Fiber 架构支持中断和优先级调度 |
+| 移动节点 | 基于 key 映射，最小化移动                          |
+
+
+
+**4️⃣ Vue vs React Diff 对比**
+
+| 特性         | Vue Diff                         | React Diff                        |
+| ------------ | -------------------------------- | --------------------------------- |
+| 静态节点优化 | ✅ 编译时标记跳过静态节点         | ❌ 没有静态节点标记                |
+| 列表更新     | 双端指针 + LIS 优化移动          | key 映射，按需重用节点            |
+| 组件类型变化 | 直接替换                         | 直接替换                          |
+| 树比较       | 同层级递归                       | 同类型递归                        |
+| 性能优化     | Fragment、Block Tree、Patch Flag | Fiber 架构支持时间分片 + 批量更新 |
+
+
+
+## 五、Webpack && Vite
+
+### 1. 打包概述
+
+> Webpack 是一个 **前端模块打包工具**（module bundler）。它可以将你的 JS、CSS、图片等各种资源看作模块，进行处理、依赖分析，然后打包成浏览器能直接使用的文件。
+>
+> 简单类比：
+>
+> - **模块（Module）**：像乐高积木，每块积木都有自己的功能。
+> - **Webpack**：像工厂，把这些乐高积木组装成最终的作品（浏览器可用的 bundle）。
+> - **打包（Bundling）**：把很多小模块组合成一个或多个大文件，提高加载效率。
+
+#### 1.1 基础概念
+
+- **🧩 Module（模块）**
+   Webpack 把一切文件都当作模块（module）来处理。无论是 JS、CSS、图片、字体、甚至 Vue 文件，Webpack 都会把它们看作一个模块，分析它们之间的依赖关系。
+
+**例子：**
+
+```js
+// src/index.js
+import _ from 'lodash'
+import './style.css'
+import { add } from './math.js'
+```
+
+在这里：
+
+- `lodash` 是一个第三方库模块（来自 node_modules）
+- `./style.css` 是一个 CSS 模块（通过 css-loader 处理）
+- `./math.js` 是你自己写的业务模块
+
+➡️ 这些都被 Webpack 认为是模块（module）。
+
+- **📦 Chunk（代码块）**
+
+当 Webpack 根据依赖关系分析完所有模块后，会按一定的规则把这些模块组合成若干个**代码块（chunk）**。每个 chunk 可以包含多个模块，具体划分由以下因素决定：
+
+​	- **入口（entry）不同** → 产生多个 chunk
+
+​	- **动态导入（import()）** → 代码拆分产生新的 chunk
+
+​	- **优化配置（如 splitChunks）** → 把公共模块提取成独立 chunk
+
+**例子：**
+
+```json
+// entry 配置
+entry: {
+  app: './src/app.js',
+  admin: './src/admin.js'
+}
+```
+
+Webpack 会生成：
+
+- app` chunk（包含 app.js 及其依赖模块）
+- `admin` chunk（包含 admin.js 及其依赖模块）
+- 如果两个入口都依赖 `lodash`，Webpack 还可能提取一个 `vendor` chunk（公共依赖）
+
+**🪣 三、Bundle（最终打包产物）**
+
+**定义：**
+ 当 Webpack 编译完所有 chunk 后，会把每个 chunk 输出为最终的 **bundle 文件**（通常是 `.js` 文件）。
+ 这些就是浏览器中实际加载的文件。
+
+**例子：**
+ 假设你的构建结果是：
+
+```
+dist/
+ ├── app.bundle.js
+ ├── admin.bundle.js
+ └── vendor.bundle.js
+```
+
+那么：
+
+- 每个 `.bundle.js` 文件就是一个 bundle；
+- 它对应一个 chunk（或多个 chunk 合并后的结果）；
+- 浏览器最终加载的就是这些 bundle。
+
+### 2. Webpack
+
+#### 2.1 Webpack的核心概念
+
+1. **Entry（入口）**
+
+   - 告诉 Webpack 从哪里开始构建依赖图。
+
+   - 例子：
+
+     ```json
+     entry: './src/index.js'
+     ```
+
+2. **Output（输出）**
+
+   - 告诉 Webpack 打包后的文件放在哪里，叫什么名字。
+
+   - 例子：
+
+     ```json
+     output: {
+       path: path.resolve(__dirname, 'dist'),
+       filename: 'bundle.js'
+     }
+     ```
+
+3. **Loaders（加载器）**
+
+   - 用于处理非 JS 模块（如 CSS、图片、TypeScript 等），把它们转换为 Webpack 能识别的模块。
+
+   - 例子：
+
+     ```json
+     module: {
+       rules: [
+         { test: /\.css$/, use: ['style-loader', 'css-loader'] }
+       ]
+     }
+     ```
+
+4. **Plugins（插件）**
+
+   - 用于扩展 Webpack 功能，比如压缩文件、生成 HTML、热更新等。
+
+   - 例子：
+
+     ```json
+     plugins: [
+       new HtmlWebpackPlugin({ template: './src/index.html' })
+     ]
+     ```
+
+5. **Mode（模式）**
+
+   - `"development"`：开发模式，打包速度快，保留调试信息
+   - `"production"`：生产模式，自动压缩优化代码
+
+#### 2.2 Webpack的工作原理
+
+Webpack 的核心工作流程可以分为 **六步**：
+
+1. 初始化
+
+   > 读取配置文件（`webpack.config.js`），确定 **入口文件** 和 **配置选项**。
+
+2. 构建依赖图（Dependency Graph）
+
+   >  Webpack 从入口文件开始，递归分析 **所有依赖的模块**。
+   >
+   > 每个模块可能依赖其他模块，形成 **依赖树/依赖图**。
+
+3. 使用 Loader 转换模块
+
+   > 遇到非 JS 文件（如 `.css`、`.ts`、`.png`）时，交给对应的 **Loader** 进行处理，生成可以被 JS 使用的模块。
+
+4. 编译成模块
+
+   >  所有模块都会被封装成 **函数**，存放在内存中，准备打包。
+   >
+   > 类似：
+   >
+   > ```js
+   > modules = {
+   >   0: function(module, exports, require) { ... },
+   >   1: function(module, exports, require) { ... }
+   > }
+   > ```
+   >
+   > 
+
+5. 输出 Bundle
+
+   >  Webpack 根据配置把这些模块打包成一个或多个 **bundle 文件**。
+   >
+   > 每个模块在 bundle 中有一个唯一 ID，`require` 用于加载依赖模块。
+
+6. 完成编译
+
+- 最终生成的 bundle 可以直接通过 `<script>` 标签引入浏览器运行。
+
+## 六、性能优化方案
 
 ### 1. 总述
 
@@ -663,7 +2593,7 @@ const throttledFn = throttle(() => {
 
 - **DNS 预解析 / 预连接**：
 
-  ```
+  ```html
   <link rel="dns-prefetch" href="//cdn.example.com">
   <link rel="preconnect" href="//cdn.example.com">
   ```
@@ -755,11 +2685,7 @@ const throttledFn = throttle(() => {
 - **运行时体验** → 骨架屏、PWA。
 - **持续优化** → 性能监控、指标追踪。
 
-****
-
-
-
-### LightHouse
+#### LightHouse
 
 **Lighthouse** 是 Google 提供的一个 **开源自动化网站质量评估工具**，主要用来检查网页在 **性能、可访问性、SEO、渐进式 Web 应用（PWA）** 等方面的质量。可以把它理解为一个 **前端性能体检工具**，帮你发现网站的瓶颈和优化建议。Lighthouse 的特点：
 
@@ -994,7 +2920,7 @@ export default Dashboard
 
 `package.json` 配置
 
-```
+```json
 {
   "name": "demo",
   "sideEffects": false,
@@ -1007,13 +2933,13 @@ export default Dashboard
 👉 `sideEffects: false` 表示项目中所有模块都**没有副作用**，可以安全地进行 Tree Shaking。
  如果某些文件必须保留（比如样式文件），可以这样写：
 
-```
+```json
 "sideEffects": ["*.css"]
 ```
 
 **示例**
 
-```
+```js
 // utils.js
 export function add(a, b) {
   return a + b
@@ -1038,7 +2964,7 @@ Vite 基于 Rollup，默认就支持 Tree Shaking，不需要额外配置。
 
 **示例**
 
-```
+```ts
 // math.ts
 export const sum = (a: number, b: number) => a + b
 export const sub = (a: number, b: number) => a - b
@@ -1059,7 +2985,7 @@ console.log(sum(1, 2))
 1. 打包后看输出文件，未使用的函数是否还在。
 2. 用 **Webpack Bundle Analyzer** 或 **rollup-plugin-visualizer** 查看产物体积和依赖图。
 
-```
+```bash
 # Webpack 安装分析工具
 npm install webpack-bundle-analyzer --save-dev
 // webpack.config.js
@@ -1227,7 +3153,7 @@ module.exports = {
 - 压缩内联 JS / CSS
 - 移除不必要的属性（如 `<input type="text">` → `<input>`）
 
-```
+```html
 <!-- 原始 -->
 <!DOCTYPE html>
 <html>
@@ -1244,19 +3170,19 @@ module.exports = {
 
 **Vite 插件**
 
-```
+```bash
 npm install vite-plugin-html --save-dev
 ```
 
 或者更常用：
 
-```
+```bash
 npm install vite-plugin-html-minify --save-dev
 ```
 
 配置：
 
-```
+```js
 import { defineConfig } from 'vite'
 import htmlMinify from 'vite-plugin-html-minify'
 
@@ -1301,7 +3227,7 @@ export default defineConfig({
 
 HTML5 提供了 `srcset` 和 `sizes` 属性，让浏览器根据 **屏幕宽度 / 分辨率** 自动选择最合适的图片。
 
-```
+```html
 <img 
   src="images/photo-800.jpg"  <!-- 默认图 -->
   srcset="
@@ -1332,7 +3258,7 @@ HTML5 提供了 `srcset` 和 `sizes` 属性，让浏览器根据 **屏幕宽度 
 - 电商/博客等大量图片的站点（节省流量）
 - 支持 **Retina 高清屏优化**：可以根据像素比（`2x`, `3x`）提供不同清晰度图片
 
-```
+```html
 <img 
   src="images/icon@1x.png"
   srcset="images/icon@1x.png 1x, images/icon@2x.png 2x"
@@ -1356,7 +3282,7 @@ HTML5 提供了 `srcset` 和 `sizes` 属性，让浏览器根据 **屏幕宽度 
 
 👉 **雪碧图示意图**（sprite.png 包含三个图标）：
 
-```
+```css
 .icon {
   background-image: url('sprite.png');
   background-repeat: no-repeat;
@@ -1533,9 +3459,7 @@ Nginx 配置示例
 
   - **反面教材：**
 
-    JavaScript
-
-    ```
+    ```js
     const box = document.getElementById('box');
     for (let i = 0; i < 10; i++) {
         box.style.left = (box.offsetLeft + 10) + 'px'; // 读写交替，性能杀手
@@ -1545,9 +3469,8 @@ Nginx 配置示例
 
   - **推荐做法 (合并操作):** 将所有样式修改汇总，最后一次性应用。
 
-    JavaScript
 
-    ```
+    ```js
     const box = document.getElementById('box');
     let left = box.offsetLeft;
     let top = box.offsetTop;
@@ -1565,25 +3488,24 @@ Nginx 配置示例
 
   - **示例：**
 
-    CSS
 
-    ```
-    /* CSS */
-    .box-active {
-        background-color: red;
-        width: 200px;
-        transform: scale(1.2);
-    }
-    ```
+~~~css
+```css
+/* CSS */
+.box-active {
+    background-color: red;
+    width: 200px;
+    transform: scale(1.2);
+}
+```
+~~~
 
-    JavaScript
 
-    ```
-    // JavaScript
-    const box = document.getElementById('box');
-    // 只需一次 DOM 操作，即可应用所有样式
-    box.classList.add('box-active');
-    ```
+```js
+const box = document.getElementById('box');
+// 只需一次 DOM 操作，即可应用所有样式
+box.classList.add('box-active');
+```
 
 - **避免使用 table 进行布局**
 
@@ -1598,9 +3520,7 @@ Nginx 配置示例
 
   - **示例：**
 
-    CSS
-
-    ```
+    ```css
     /* 不推荐 ❌: 会触发重排 */
     .box.animate {
         transition: top 0.3s;
@@ -1647,13 +3567,13 @@ Nginx 配置示例
 
 安装
 
-```
+```bash
 npm install vue-virtual-scroller
 ```
 
 使用示例
 
-```
+```html
 <template>
   <div class="list-container">
     <!-- VirtualList 组件只渲染可见区域 -->
@@ -1705,7 +3625,7 @@ const items = ref(
 
 如果你想理解原理，可以手写一个简易版：
 
-```
+```html
 <template>
   <div 
     class="list-container" 
@@ -1803,9 +3723,7 @@ function onScroll(e) {
 
   - **`requestIdleCallback` 示例：**
 
-    JavaScript
-
-    ```
+    ```js
     const tasks = [/* 很多渲染任务 */];
     let currentTaskIndex = 0;
     
@@ -1827,7 +3745,232 @@ function onScroll(e) {
     requestIdleCallback(renderChunk);
     ```
 
-## 五、场景相关
+****
+
+### 4. 排查思路
+
+要**高效排查网页加载慢**，可以需要从**浏览器网络层面、前端资源、接口性能、渲染逻辑、服务器端响应**等多个角度系统分析。
+
+**🧭 一、总体排查思路（5大步骤）**
+
+> 🔍 **一句话总结：**
+>  “先区分前端慢还是后端慢，再逐层分析是网络、资源、接口、还是渲染。”
+
+| 步骤         | 关注点                           | 工具                              | 目标                   |
+| ------------ | -------------------------------- | --------------------------------- | ---------------------- |
+| 1️⃣ 初步定位   | 是前端慢？还是接口慢？           | Chrome DevTools → Network 面板    | 判断慢在哪一层         |
+| 2️⃣ 网络传输层 | 是否 DNS、TCP、SSL、CDN 有延迟   | Performance / WebPageTest         | 分析加载链路           |
+| 3️⃣ 静态资源层 | JS、CSS、图片是否过大或阻塞渲染  | Lighthouse / DevTools Coverage    | 找体积和请求瓶颈       |
+| 4️⃣ 接口层     | API 是否耗时高、并发多、顺序依赖 | Network Timing / 后端日志         | 确认慢的请求           |
+| 5️⃣ 渲染层     | JS 执行或 DOM 渲染是否耗时       | Performance 面板 / React Profiler | 检查渲染逻辑和计算压力 |
+
+
+
+**🕵️‍♂️ 二、第一步：判断是“前端慢”还是“后端慢”**
+
+✅ 方法：
+
+打开 **Chrome 开发者工具 → Network 面板**
+ 刷新页面（勾选 “Disable cache”）
+
+观察：
+
+1. **白屏时间**：是否页面空白很久 → 可能是首屏渲染慢；
+2. **首个请求响应慢**：比如 HTML 加载就很久 → 后端慢；
+3. **静态资源加载慢**：CSS/JS 下载慢 → 网络或 CDN 问题；
+4. **接口请求慢**：API 响应延迟高 → 后端或数据库问题。
+
+📊 关键时间指标：
+
+| 指标                       | 含义         | 常见问题      |
+| -------------------------- | ------------ | ------------- |
+| DNS Lookup                 | 域名解析     | DNS 服务慢    |
+| Initial Connection         | TCP 建立慢   | 网络延迟      |
+| SSL                        | HTTPS 握手慢 | 证书优化      |
+| TTFB（Time To First Byte） | 首字节时间   | 后端慢        |
+| Content Download           | 内容传输     | 带宽/压缩问题 |
+
+
+
+**🌐 三、网络层排查**
+
+🔹 检查 CDN / 域名 / 网络延迟
+
+- 用 **Chrome Network** 查看每个资源的时长。
+- 看看是不是外部资源（比如 fonts.googleapis.com、analytics.js）卡住。
+- 可用 WebPageTest.org 或 Lighthouse 查看**瀑布图**。
+
+**优化方向：**
+
+- ✅ 开启资源缓存（Cache-Control、ETag）
+- ✅ 使用 CDN 加速（最近节点）
+- ✅ 开启 Gzip / Brotli 压缩
+- ✅ 合理预加载：`<link rel="preload">`、`<link rel="dns-prefetch">`
+
+----
+
+
+
+📦 四、静态资源层排查
+
+查看 **JS/CSS/图片** 的加载情况：
+
+1️⃣ JS 体积过大
+
+- 打开 DevTools → **Coverage 面板**
+- 看哪些脚本加载了但没用到（死代码）
+
+**优化方式：**
+
+- Tree-shaking / 按需引入 / 代码分割（Code Splitting）
+- 懒加载（Dynamic Import）
+- 去掉大库或替换轻量库（如 moment → dayjs）
+
+2️⃣ 图片过大
+
+- 图片未压缩、尺寸过大、格式老旧（jpg/png）
+- 使用 WebP / AVIF 格式
+- 用 `srcset` 和 `sizes` 适配多终端
+
+3️⃣ 阻塞渲染
+
+- 把非关键 CSS 延迟加载：`<link rel="preload">`
+
+- JS 加上 `defer` 或 `async`
+
+  ```html
+  <script src="main.js" defer></script>
+  ```
+
+- 首屏 CSS 内联，非关键资源懒加载
+
+----
+
+
+
+**🔌 五、接口层排查**
+
+接口请求耗时高是网页加载慢的常见原因之一。
+
+重点看：
+
+- **TTFB**（后端响应时间）
+- **请求是否串行发出**
+- **是否有重复请求 / N+1 请求**
+
+优化建议：
+
+- 接口并发发送（Promise.all）
+- 使用缓存（localStorage / SW）
+- 后端合并接口、分页返回数据
+- 使用 HTTP/2 多路复用
+
+----
+
+
+
+**🧮 六、渲染层排查（JS 执行慢）**
+
+即使资源加载很快，渲染逻辑复杂也会导致页面卡顿。
+
+观察方法：
+
+打开 **Chrome → Performance 面板**
+ 录制页面加载过程。
+
+重点关注：
+
+- JS 执行时间是否过长（红色长条）
+- 是否频繁重绘（Repaint）或回流（Reflow）
+- React/Vue 是否反复渲染无关组件
+
+优化方式：
+
+- 减少不必要的 setState / watch
+- 虚拟列表优化长列表（React Virtualized / Vue Virtual Scroll）
+- 使用 memoization（useMemo / computed）
+- 懒加载组件 / 路由分块
+
+----
+
+
+
+**🧰 七、辅助工具推荐**
+
+| 工具                  | 用途                                             |
+| --------------------- | ------------------------------------------------ |
+| 🧩 Chrome DevTools     | 全能调试工具（Network + Performance + Coverage） |
+| 🧱 Lighthouse（内置）  | 自动生成性能报告（含建议）                       |
+| 🌎 WebPageTest         | 模拟不同地区、网络测速                           |
+| 📈 GTmetrix            | 页面体积、加载顺序分析                           |
+| 🔥 React Profiler      | 分析 React 渲染性能                              |
+| 🐍 Wireshark / Fiddler | 深入分析请求链路                                 |
+
+------
+
+
+
+## 七、项目相关
+
+> cookie当中的常见配置
+>
+> - httpOnly：
+>
+>   **作用**：禁止 JavaScript 通过 `document.cookie` 访问该 Cookie。
+>
+>   **意义**：防止 **XSS（跨站脚本攻击）** 获取登录凭证。
+>
+>   ```js
+>   res.cookie('token', jwtToken, {
+>     httpOnly: true, // 禁止前端JS访问
+>   })
+>   ```
+>
+>   
+>
+> - secure
+>
+>   **作用**：限制 Cookie 只能在 **HTTPS** 连接中传输。
+>
+>   **意义**：防止中间人通过 HTTP 抓包或嗅探窃取 Cookie。
+>
+>   ```js
+>   res.cookie('token', jwtToken, {
+>     secure: true, // 只在 HTTPS 下传输
+>   })
+>   ```
+>
+> 
+>
+> Session:是服务器在内存或数据库中为每个登录用户保存的一份**会话数据**。
+>
+> 例如：用户第一次登录：
+>
+> - 浏览器提交用户名密码；
+>
+> - 服务器验证成功后生成一份 `session`，比如：
+>
+>   ```json
+>   {
+>     sessionId: "abc123",
+>     userId: 1,
+>     name: "Liu",
+>     role: "admin"
+>   }
+>   ```
+>
+> - 同时服务器返回响应头：
+>
+>   ```
+>   Set-Cookie: sessionId=abc123; HttpOnly
+>   ```
+>
+> 2️⃣ 浏览器保存这个 Cookie。
+> 3️⃣ 下次请求时自动会带上：
+>
+> ```
+> Cookie: sessionId=abc123
+> ```
 
 ### 1. 登录方案
 
@@ -2011,7 +4154,10 @@ async function getProfile() {
 
 4. 后端通过 `jwt.verify()` 校验签名 + 过期时间 → 确认用户身份。
 
-#### 1.3. **单点登录（SSO，Single Sign-On）**
+
+
+
+#### 1.3 **单点登录（SSO，Single Sign-On）**
 
 - **适用场景**：企业内部多个系统、统一认证中心。
 
@@ -2019,31 +4165,36 @@ async function getProfile() {
   1. 用户访问某个系统，如果未登录会被重定向到统一认证中心。
   2. 认证中心验证用户并生成票据（如 Token 或 Ticket）。
   3. 用户带着票据回到业务系统，业务系统验证票据并放行。
-  
+
 - **常见实现**：
   - **CAS 协议**、**OAuth2.0**、**SAML** 等。
-  
+
 - **优点**：
   - 多系统统一登录，用户体验好。
-  
+
 - **缺点**：
   - 架构复杂，需要额外的认证服务。
-  
+
+    
+
   **⚙️ 常见的 SSO 实现方案**
-  
+
   1. **基于 Cookie + Session 的同域名共享**
   
   - **适用场景**：子系统都在同一个主域名下，比如：
     - `oa.company.com`
     - `mail.company.com`
     - `wiki.company.com`
+    
   - **原理**：设置 Cookie 的 Domain 为 `.company.com`，这样所有子域名都能共享这个 Cookie（即 SessionID）。
+  
   - **优点**：实现简单。
+  
   - **缺点**：仅限于同一主域名下的系统，不适合跨域。
   
-   **基于 Cookie + Session 的同域名共享 SSO 实现方案**，这个方式比较适合公司内部的 **同一主域名的子系统**（比如 `oa.company.com`、`mail.company.com`、`wiki.company.com`）。
+    
   
-  ****
+   **基于 Cookie + Session 的同域名共享 SSO 实现方案**，这个方式比较适合公司内部的 **同一主域名的子系统**（比如 `oa.company.com`、`mail.company.com`、`wiki.company.com`）。
   
   **🖥️ 实现思路**
   
@@ -2058,7 +4209,7 @@ async function getProfile() {
   
   这里用 Node.js + Express 来演示：
   
-  1. SSO 登录中心（`sso.company.com`）
+  1️⃣ SSO 登录中心（`sso.company.com`）
   
   ```js
   import express from "express";
@@ -2096,9 +4247,9 @@ async function getProfile() {
   app.listen(3000, () => console.log("SSO 登录中心运行在 http://sso.company.com:3000"));
   ```
   
-  2. 子系统（`oa.company.com`）
+  2️⃣ 子系统（`oa.company.com`）
   
-  ```
+  ```js
   import express from "express";
   import session from "express-session";
   import fetch from "node-fetch";
@@ -2160,43 +4311,198 @@ async function getProfile() {
   - **缺点**：
     - 仅支持同一主域名下的系统。
     - 不能支持跨公司、跨域的 SSO。
-  
-  2. **基于 Token（JWT）+ 网关校验**
-  
-  - **适用场景**：前后端分离、跨域系统、移动端和 Web 混合环境。
-  - **原理**：
-    1. 用户在 SSO 登录中心输入账号密码。
-    2. 登录中心签发一个 Token（JWT）。
-    3. 用户访问任一系统时，携带这个 Token（放在 Cookie 或 HTTP Header）。
-    4. 各个子系统验证 Token 的合法性（解密签名或请求认证中心验证）。
-  - **优点**：支持跨域，移动端也能用。
-  - **缺点**：Token 一旦泄露，在有效期内可能被滥用。
-  
-  3. **基于 OAuth2 / OpenID Connect**
-  
-  - **适用场景**：第三方登录、企业内部统一认证、跨组织系统。
-  - **原理**：
-    - 用户访问子系统 → 重定向到 **统一认证中心（Identity Provider, IdP）**。
-    - 用户在认证中心完成登录。
-    - 认证中心生成一个授权码（Authorization Code）。
-    - 子系统拿授权码去认证中心换取 Token（Access Token / ID Token）。
-    - 子系统用 Token 获取用户信息并完成登录。
-  - **典型应用**：
-    - 使用 Google / GitHub 登录一个网站
-    - 企业内部用 Keycloak、Auth0、Azure AD 做 SSO
-  - **优点**：安全标准化，扩展性强，支持多端、跨域。
-  - **缺点**：实现复杂，需要额外的认证服务器。
-  
-  4. **CAS（Central Authentication Service）**
-  
-  - **适用场景**：常见于传统企业内部系统。
-  - **原理**：
-    - 用户访问系统 A → 跳转到 CAS 登录中心。
-    - 登录成功后，CAS 发一个 **Ticket** 给系统 A。
-    - 系统 A 用 Ticket 去 CAS 验证，获取用户信息。
-    - 访问系统 B 时，同样流程，CAS 判断已登录，直接发 Ticket。
-  - **优点**：成熟、稳定。
-  - **缺点**：比 OAuth2 轻量，但跨端支持不如 OAuth2。
+
+
+----
+
+
+
+2. **基于 Token（JWT）+ 网关校验**
+
+- **适用场景**：前后端分离、跨域系统、移动端和 Web 混合环境。
+- **原理**：
+  1. 用户在 SSO 登录中心输入账号密码。
+  2. 登录中心签发一个 Token（JWT）。
+  3. 用户访问任一系统时，携带这个 Token（放在 Cookie 或 HTTP Header）。
+  4. 各个子系统验证 Token 的合法性（解密签名或请求认证中心验证）。
+- **优点**：支持跨域，移动端也能用。
+- **缺点**：Token 一旦泄露，在有效期内可能被滥用。
+
+**🛠️ 示例代码**
+
+后端部分
+
+```js
+// server.js
+import express from 'express';
+import jwt from 'jsonwebtoken';
+import bodyParser from 'body-parser';
+import cors from 'cors';
+
+const app = express();
+app.use(cors());
+app.use(bodyParser.json());
+
+const SECRET_KEY = 'my_secret_key'; // 建议用环境变量配置
+
+//登陆接口，签发token
+app.post('/login', (req, res) => {
+  const { username, password } = req.body;
+  // 简单校验
+  if (username === 'admin' && password === '123456') {
+    const token = jwt.sign(
+      { username, role: 'admin' },
+      SECRET_KEY,
+      { expiresIn: '2h' } // 过期时间
+    );
+    res.json({ code: 200, token });
+  } else {
+    res.status(401).json({ code: 401, msg: '用户名或密码错误' });
+  }
+});
+
+//中间件校验token
+function verifyToken(req, res, next) {
+  const authHeader = req.headers['authorization'];
+  if (!authHeader) return res.status(401).json({ msg: '未携带 token' });
+
+  const token = authHeader.split(' ')[1]; // "Bearer <token>"
+  jwt.verify(token, SECRET_KEY, (err, decoded) => {
+    if (err) {
+      return res.status(401).json({ msg: 'token 无效或已过期' });
+    }
+    req.user = decoded; // 将用户信息注入请求对象
+    next();
+  });
+}
+
+//获得用户信息接口
+app.get('/profile', verifyToken, (req, res) => {
+  res.json({
+    code: 200,
+    data: {
+      username: req.user.username,
+      role: req.user.role,
+    }
+  });
+});
+
+```
+
+
+
+**前端部分**
+
+```js
+<template>
+  <div>
+    <input v-model="username" placeholder="用户名" />
+    <input v-model="password" placeholder="密码" type="password" />
+    <button @click="login">登录</button>
+  </div>
+</template>
+
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+
+const router = useRouter()
+const username = ref('')
+const password = ref('')
+
+async function login() {
+  try {
+    const res = await fetch('http://localhost:3000/login', {
+      method: 'POST',
+      credentials: 'include', // ✅ 带上 HttpOnly Cookie
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username: username.value, password: password.value })
+    })
+    const data = await res.json()
+    if (res.ok) router.push('/home')
+    else alert(data.msg)
+  } catch (err) {
+    console.error(err)
+  }
+}
+</script>
+
+// src/api/request.js
+export async function request(url, options = {}) {
+  const res = await fetch('http://localhost:3000' + url, {
+    credentials: 'include', // 自动带 Cookie
+    headers: { 'Content-Type': 'application/json', ...(options.headers || {}) },
+    ...options
+  })
+  if (!res.ok) {
+    const err = await res.json()
+    throw new Error(err.msg || '请求失败')
+  }
+  return res.json()
+}
+
+async function getProfile() {
+  const res = await request('/user/profile')
+  console.log(res.data)
+}
+
+async function getOrders() {
+  const res = await request('/order/list')
+  console.log(res.data)
+}
+
+async function logout() {
+  await fetch('http://localhost:3000/logout', {
+    method: 'POST',
+    credentials: 'include'
+  })
+  window.location.href = '/login'
+}
+
+```
+
+
+
+
+🔐 五、安全与优化建议
+
+1. **Token 存储位置**
+   - 推荐使用 `HttpOnly + Secure` Cookie（防 XSS），如果方便可以先用 localStorage。
+2. **Token 过期自动刷新**
+   - 实现一个 `/refresh` 接口，用 Refresh Token 换新的 Access Token。
+3. **退出登录**
+   - 前端清除 Token；
+   - 或在后端维护黑名单（可存在 Redis）。
+4. **接口白名单**
+   - 登录、注册等接口不需要校验 Token。
+
+
+
+3. **基于 OAuth2 / OpenID Connect**
+
+- **适用场景**：第三方登录、企业内部统一认证、跨组织系统。
+- **原理**：
+  - 用户访问子系统 → 重定向到 **统一认证中心（Identity Provider, IdP）**。
+  - 用户在认证中心完成登录。
+  - 认证中心生成一个授权码（Authorization Code）。
+  - 子系统拿授权码去认证中心换取 Token（Access Token / ID Token）。
+  - 子系统用 Token 获取用户信息并完成登录。
+- **典型应用**：
+  - 使用 Google / GitHub 登录一个网站
+  - 企业内部用 Keycloak、Auth0、Azure AD 做 SSO
+- **优点**：安全标准化，扩展性强，支持多端、跨域。
+- **缺点**：实现复杂，需要额外的认证服务器。
+
+4. **CAS（Central Authentication Service）**
+
+- **适用场景**：常见于传统企业内部系统。
+- **原理**：
+  - 用户访问系统 A → 跳转到 CAS 登录中心。
+  - 登录成功后，CAS 发一个 **Ticket** 给系统 A。
+  - 系统 A 用 Ticket 去 CAS 验证，获取用户信息。
+  - 访问系统 B 时，同样流程，CAS 判断已登录，直接发 Ticket。
+- **优点**：成熟、稳定。
+- **缺点**：比 OAuth2 轻量，但跨端支持不如 OAuth2。
 
 #### 1.4 **第三方登录（OAuth2.0 授权）**
 
@@ -2237,3 +4543,1991 @@ async function getProfile() {
 - **CSRF 防护**：对 Cookie 方案尤其重要，可以用 CSRF Token 或 SameSite。
 - **XSS 防护**：避免存储在 JS 可访问的地方（如 localStorage）。
 - **短 Token + 刷新 Token（Refresh Token）机制**：平衡安全性和体验。
+
+****
+
+### 2. 跨域解决方案
+
+**🧩 一、为什么会有跨域问题**
+
+跨域的根本原因是浏览器的 **同源策略（Same-Origin Policy）**。
+
+**同源策略要求：**
+ 两个 URL 的
+
+- 协议（http / https）
+- 域名（example.com / api.example.com）
+- 端口号（80 / 3000）
+   必须完全一致，才能互相访问资源。
+
+**不同源就会被拦截：**
+
+```js
+// 前端在 http://localhost:3000
+fetch('http://localhost:4000/api/data') // ❌ 浏览器拦截跨域请求
+```
+
+****
+
+**🚀 二、常见的跨域解决方案**
+
+✅ 1. 服务器端设置 CORS 响应头（推荐方式）
+
+**原理**：让后端在响应头中显式告诉浏览器“允许跨域”。
+
+**示例（Node + Express）：**
+
+```js
+import express from 'express'
+import cors from 'cors'
+
+const app = express()
+
+// 方式1：使用 cors 中间件（最简单）
+app.use(cors())
+
+// 方式2：手动设置响应头
+app.use((req, res, next) => {
+  res.setHeader('Access-Control-Allow-Origin', '*') // 或指定域名
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  next()
+})
+
+app.get('/api/data', (req, res) => {
+  res.json({ msg: '跨域成功！' })
+})
+
+app.listen(4000)
+```
+
+🟩 推荐使用 `cors` 包，它会自动处理 OPTIONS 预检请求。
+
+****
+
+✅ 2. 使用代理（在开发环境中常用）
+
+这种方式**绕过浏览器的同源检查**，由本地开发服务器代为转发请求。
+
+例如在 **Vue / Vite**：
+
+```js
+// vite.config.js
+export default {
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:4000', // 目标服务器
+        changeOrigin: true, // 修改请求头中的origin
+        rewrite: path => path.replace(/^\/api/, '') // 可选：重写路径
+      }
+    }
+  }
+}
+```
+
+这样前端请求 `/api/data` 就会被 Vite 转发到 `http://localhost:4000/data`。
+
+在 **Next.js**：
+
+```js
+// next.config.js
+module.exports = {
+  async rewrites() {
+    return [
+      {
+        source: '/api/:path*',
+        destination: 'http://localhost:4000/:path*', // 代理到后端
+      },
+    ]
+  },
+}
+```
+
+****
+
+✅ 3. Nginx 反向代理（生产环境常用）
+
+**Nginx 配置示例：**
+
+```js
+server {
+  listen 80;
+  server_name myapp.com;
+
+  location /api/ {
+    proxy_pass http://127.0.0.1:4000/;  # 后端服务地址
+    proxy_set_header Host $host;
+    proxy_set_header X-Real-IP $remote_addr;
+  }
+}
+```
+
+这样，前端访问 `myapp.com/api/...` 实际会由 Nginx 转发给后端。
+
+****
+
+✅ 4. JSONP（仅支持 GET 请求，不推荐）
+
+**原理**：利用 `<script>` 标签不受同源限制。
+
+```html
+<script src="http://api.example.com/getData?callback=handleData"></script>
+
+<script>
+  function handleData(data) {
+    console.log(data)
+  }
+</script>
+```
+
+但仅支持 `GET`，不安全，现代项目已基本弃用。
+
+****
+
+✅ 5. 前后端同域部署（根本解决）
+
+最彻底的方式：让前端与后端部署在同一个域名下。
+ 例如：
+
+```
+前端：http://example.com
+后端：http://example.com/api
+```
+
+这就没有跨域问题了（通常通过 Nginx 路由或反代实现）。
+
+****
+
+🧠 三、进阶说明：预检请求（OPTIONS）
+
+当浏览器检测到请求属于**复杂请求**（例如包含自定义 header，或使用 PUT/DELETE 等方法）时，会先自动发送一个 `OPTIONS` 请求来确认服务器是否允许。
+
+解决方式：
+ 后端必须正确响应这个 `OPTIONS` 请求：
+
+```js
+app.options('*', cors()) // express + cors 包自动处理
+```
+
+****
+
+✅ 总结对比
+
+| 方式                             | 适用场景    | 是否推荐 | 备注                           |
+| -------------------------------- | ----------- | -------- | ------------------------------ |
+| CORS 响应头                      | 生产 & 开发 | ⭐⭐⭐⭐     | 最正统做法                     |
+| 本地代理 (Vite / Next / Webpack) | 开发        | ⭐⭐⭐      | 快速方便                       |
+| Nginx 反代                       | 生产        | ⭐⭐⭐⭐     | 性能好，可同时解决静态资源问题 |
+| JSONP                            | 仅 GET      | ⭐        | 老旧方式                       |
+| 同域部署                         | 生产        | ⭐⭐⭐⭐     | 根本上无跨域问题               |
+
+****
+
+
+
+### 3.请求详解
+
+#### 3.1 **option请求**
+
+🧩 一、什么是 `OPTIONS` 请求
+
+`OPTIONS` 是一种 **HTTP 请求方法**，
+ 意思是：“我想了解这个服务器支持哪些请求方式和规则”。
+
+换句话说：
+
+> 它是浏览器在正式发送请求之前，先“打个招呼”，问问服务器：“我能不能这样请求？你允许我跨域吗？”
+****
+
+🚦 二、为什么会有 `OPTIONS` 请求
+
+浏览器在执行跨域请求时，会进行 **安全检查**，
+ 如果它判断这个请求 **“可能有风险”**，
+ 它就不会直接发真正的请求，而是先发一个 **“预检请求（preflight request）”**。
+
+这个预检请求的 **HTTP 方法** 就是 `OPTIONS`。
+
+------
+
+ 🧠 三、浏览器判断“有风险”的规则
+
+浏览器会把跨域请求分成两类：
+
+| 类型                                | 条件                                                         | 是否触发 `OPTIONS` 预检 |
+| ----------------------------------- | ------------------------------------------------------------ | ----------------------- |
+| ✅ **简单请求 (Simple Request)**     | 满足以下条件全部成立： 1. 方法是 `GET`、`POST` 或 `HEAD` 2. 请求头中没有自定义 header（除了 Accept、Content-Type 等基本头） 3. Content-Type 仅限 `application/x-www-form-urlencoded`、`multipart/form-data`、`text/plain` | ❌ 不触发                |
+| ⚠️ **复杂请求 (Non-simple Request)** | 不满足上述条件，例如： - 使用了 `PUT`、`DELETE` 等方法 - 自定义了 header（如 Authorization） - Content-Type 是 `application/json` | ✅ 会先触发 `OPTIONS`    |
+
+------
+
+**举个例子：**
+
+✅ 简单请求（不会发 OPTIONS）
+
+```js
+fetch('http://api.example.com/data', {
+  method: 'GET',
+})
+```
+
+ ⚠️ 复杂请求（会发 OPTIONS）
+
+```js
+fetch('http://api.example.com/data', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' }, // 不属于简单请求类型
+  body: JSON.stringify({ name: 'Liu' })
+})
+```
+
+在第二种情况下，浏览器会：
+
+1. **先发送一条 OPTIONS 请求**
+    询问服务器是否允许这个跨域访问。
+2. **如果服务器回应允许跨域**，
+    浏览器才会再发真正的 POST 请求。
+
+------
+
+🧩 四、OPTIONS 请求的内容是什么样的？
+
+例如浏览器发的：
+
+```yaml
+OPTIONS /data HTTP/1.1
+Origin: http://localhost:3000
+Access-Control-Request-Method: POST
+Access-Control-Request-Headers: Content-Type
+```
+
+服务器应该回应：
+
+```
+HTTP/1.1 204 No Content
+Access-Control-Allow-Origin: http://localhost:3000
+Access-Control-Allow-Methods: GET, POST, OPTIONS
+Access-Control-Allow-Headers: Content-Type
+Access-Control-Max-Age: 86400
+```
+
+其中的意思是：
+
+- ✅ `Access-Control-Allow-Origin` 告诉浏览器允许来自哪个源的请求；
+- ✅ `Access-Control-Allow-Methods` 告诉浏览器允许哪些方法；
+- ✅ `Access-Control-Allow-Headers` 告诉浏览器允许哪些自定义头；
+- ✅ `Access-Control-Max-Age` 表示结果缓存多久（单位：秒），在这段时间内不用再发 OPTIONS。
+
+------
+
+🛠 五、在后端怎么处理 OPTIONS 请求
+
+如果你的后端是 Node + Express：
+
+```js
+import express from 'express'
+import cors from 'cors'
+
+const app = express()
+app.use(cors()) // 自动处理 OPTIONS 预检请求
+
+// 或者手动写：
+app.options('*', (req, res) => {
+  res.header('Access-Control-Allow-Origin', '*')
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS')
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization')
+  res.sendStatus(204)
+})
+```
+
+这样浏览器的预检就能顺利通过。
+
+#### 3.2 **get和post请求**
+
+**🌍 一、基本区别**
+
+| 对比项                   | GET                         | POST                                    |
+| ------------------------ | --------------------------- | --------------------------------------- |
+| **用途**                 | 从服务器获取数据            | 向服务器提交数据（如表单）              |
+| **参数位置**             | 放在 URL 里（`?key=value`） | 放在请求体（body）中                    |
+| **是否对服务器有副作用** | 理论上无副作用（幂等）      | 一般有副作用（非幂等）                  |
+| **数据大小限制**         | 有限制（URL 长度约 2~8KB）  | 理论上无限制（取决于服务器配置）        |
+| **是否可缓存**           | 可以被浏览器缓存            | 默认不缓存                              |
+| **是否能被收藏或分享**   | 可以（参数在 URL 中）       | 不可以                                  |
+| **是否安全**             | 参数暴露在 URL，不安全      | 参数在 body，相对更安全（但仍需 HTTPS） |
+
+------
+
+**⚙️ 二、底层传输区别**
+
+🧩 1. GET
+
+```
+GET /api/user?id=1001 HTTP/1.1
+Host: example.com
+```
+
+- 参数拼在 URL 中。
+- 请求体（body）为空。
+- 一般用于读取资源。
+
+------
+
+🧩 2. POST
+
+```
+POST /api/user HTTP/1.1
+Host: example.com
+Content-Type: application/json
+
+{"id": 1001, "name": "Liu"}
+```
+
+- 参数放在请求体中。
+- 常用于表单提交、创建资源等。
+
+------
+
+**🧠 三、语义区别（重点）**
+
+| 概念                | 说明                                                  |
+| ------------------- | ----------------------------------------------------- |
+| **GET 是幂等的**    | 多次请求结果相同，不应改变资源状态。例：`GET /user/1` |
+| **POST 是非幂等的** | 每次请求可能产生不同结果。例：`POST /user` 创建新用户 |
+
+------
+
+**🔐 四、安全性区别**
+
+- GET 的参数会暴露在：
+  - 浏览器地址栏；
+  - 浏览器历史记录；
+  - 服务器日志；
+  - 代理缓存；
+- POST 的参数在请求体中，相对安全，但如果使用 HTTP 明文传输，依旧可被窃听。
+   👉 **真正的安全依赖于 HTTPS 加密，而不是 POST 本身。**
+
+------
+
+**💾 五、缓存与性能**
+
+| 项                   | GET                      | POST           |
+| -------------------- | ------------------------ | -------------- |
+| 缓存策略             | 可被缓存                 | 默认不缓存     |
+| 浏览器回退行为       | 不会重新请求（使用缓存） | 会重新提交表单 |
+| 预取（prefetch）支持 | 支持                     | 一般不支持     |
+
+所以浏览器在优化上对 **GET 更友好**。
+
+------
+
+**📦 六、示例对比**
+
+GET 示例（查询）
+
+```js
+fetch('/api/user?id=1001')
+  .then(res => res.json())
+  .then(data => console.log(data))
+```
+
+POST 示例（提交）
+
+```js
+fetch('/api/user', {
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({ id: 1001, name: 'Liu' })
+})
+```
+
+------
+
+**🧭 七、一句总结**
+
+> **GET 用于“获取”，POST 用于“提交”。**
+> GET 参数在 URL 中，可缓存、易泄露；
+> POST 参数在请求体中，可传大数据、更安全。
+> 安全的关键不是 POST，而是 **HTTPS**。
+
+----
+
+
+
+### 4. 图片懒加载
+
+**🌙 一、懒加载的核心原理**
+
+**核心思想：**
+
+> 只有当图片即将进入可视区域时，才去加载图片资源，避免一次性加载大量图片造成页面卡顿或白屏。
+> 浏览器提供了高效的 API：IntersectionObserver,它能自动监测元素是否进入可视区域，不需要频繁监听滚动事件。
+
+**简化流程：**
+
+1. 页面初始加载时，不给 `<img>` 标签设置真实的 `src`；
+2. 用一个占位图或空的 `data-src` 属性保存真实图片地址；
+3. 当用户滚动页面时，检测图片是否进入视口；
+4. 如果进入视口，再把 `data-src` 的值赋给 `src`，触发图片加载。
+
+------
+
+**⚙️ 二、实现方式**
+
+✅ 方式 1：手动实现（基于 `IntersectionObserver`）
+
+现代浏览器推荐的方式，性能好。
+
+```html
+<template>
+  <div class="image-list">
+    <img 
+      v-for="(item, index) in images" 
+      :key="index" 
+      v-lazy="item.src" 
+      :alt="item.alt"
+    />
+  </div>
+</template>
+
+<script setup>
+const images = [
+  { src: '/images/a.jpg', alt: '图片A' },
+  { src: '/images/b.jpg', alt: '图片B' },
+  // ...
+]
+</script>
+
+<style>
+img {
+  width: 100%;
+  height: auto;
+  display: block;
+  min-height: 200px;
+  background: #eee; /* 占位背景 */
+}
+</style>
+```
+
+**自定义指令：`v-lazy`**
+
+```js
+// directives/lazy.js
+export default {
+  mounted(el, binding) {
+    const observer = new IntersectionObserver(([entry]) => {
+      if (entry.isIntersecting) {
+        el.src = binding.value
+        observer.unobserve(el)
+      }
+    })
+    observer.observe(el)
+  }
+}
+```
+
+**注册指令：**
+
+```js
+// main.js
+import { createApp } from 'vue'
+import App from './App.vue'
+import lazy from './directives/lazy'
+
+const app = createApp(App)
+app.directive('lazy', lazy)
+app.mount('#app')
+```
+
+------
+
+**✅ 方式 2：使用第三方库（更省事）**
+
+推荐库：`vue-lazyload`
+
+```bash
+npm install vue-lazyload
+```
+
+**使用：**
+
+```js
+// main.js
+import { createApp } from 'vue'
+import App from './App.vue'
+import VueLazyLoad from 'vue-lazyload'
+
+const app = createApp(App)
+
+app.use(VueLazyLoad, {
+  loading: '/images/loading.png', // 加载中占位
+  error: '/images/error.png'     // 加载失败占位
+})
+
+app.mount('#app')
+```
+
+**模板中使用：**
+
+```js
+<img v-lazy="/images/photo.jpg" />
+```
+
+------
+
+**🔍 三、性能与体验优化**
+
+1. **预加载距离**：在进入视口前一定距离就加载，避免用户看到加载延迟；
+
+   ```css
+   rootMargin: '0px 0px 100px 0px'
+   ```
+
+2. **占位图优化**：先显示小图或模糊图，再替换高清图；
+
+3. **结合 CDN 压缩**：不同分辨率加载不同清晰度图片；
+
+4. **Skeleton（骨架屏）**：对大量图片场景体验更好。
+
+------
+
+
+
+## 八、浏览器
+
+### 1. 浏览器本地存储
+
+| 类型                               | 特点                     | 生命周期                    | 大小限制                | 是否随请求发送到服务器 |
+| ---------------------------------- | ------------------------ | --------------------------- | ----------------------- | ---------------------- |
+| **Cookie**                         | 早期方案，用于服务端通信 | 可自定义（Expires/Max-Age） | ~4KB                    | ✅ 会自动携带           |
+| **localStorage**                   | 永久存储在本地           | 永久（除非手动删除）        | ~5MB                    | ❌ 不会                 |
+| **sessionStorage**                 | 临时存储（仅当前标签页） | 关闭标签页即清除            | ~5MB                    | ❌ 不会                 |
+| **IndexedDB**                      | 面向对象数据库           | 永久                        | 几百 MB（依浏览器而定） | ❌ 不会                 |
+| **Cache Storage (Service Worker)** | 用于 PWA 缓存资源        | 永久                        | 视浏览器而定            | ❌ 不会                 |
+
+#### **1.1 Cookie**
+
+由浏览器自动携带到服务器，用于**会话管理、身份验证**。
+
+```
+// 设置 cookie
+document.cookie = "user=Tom; expires=Fri, 31 Dec 2025 23:59:59 GMT; path=/";
+
+// 读取 cookie
+console.log(document.cookie); // "user=Tom"
+
+// 删除 cookie（通过设置过期时间）
+document.cookie = "user=; expires=Thu, 01 Jan 1970 00:00:00 GMT";
+```
+
+⚠️ 缺点：
+
+- 容量小（约 4KB）
+- 每次请求都会被带上（浪费带宽）
+- 操作不太方便（需要自己解析字符串）
+
+----
+
+#### **1.2 localStorage**
+
+用于**长期保存数据**（除非用户手动清除缓存）。
+
+```
+// 保存数据
+localStorage.setItem('theme', 'dark');
+
+// 读取数据
+const theme = localStorage.getItem('theme');
+
+// 删除单个数据
+localStorage.removeItem('theme');
+
+// 清空所有
+localStorage.clear();
+```
+
+✅ 优点：
+
+- 永久保存（浏览器关闭也不会丢）
+- 操作简单（key-value 形式）
+- 大小限制较大（约 5MB）
+
+❌ 缺点：
+
+- 不能跨浏览器共享
+- 不能被服务器端访问
+
+----
+
+#### **1.3 sessionStorage**
+
+与 `localStorage` 类似，但只在当前标签页有效。
+
+```js
+sessionStorage.setItem('token', 'abc123');
+sessionStorage.getItem('token'); // "abc123"
+```
+
+🧠 特点：
+
+- 页面刷新仍然存在
+- 关闭标签页后立即清除
+- 不同标签页之间相互独立
+
+适合：
+
+- 临时状态保存（如分页位置、未提交表单）
+
+----
+
+#### 1.4 IndexedDB
+
+**IndexedDB 是浏览器提供的一个本地数据库，用于在用户设备上存储大量结构化数据。**
+
+特点总结：
+
+- 是 **NoSQL 键值型数据库**（非关系型）
+- 支持 **存储 JavaScript 对象、文件、二进制数据（Blob）**
+- 支持 **索引（Index）查询**
+- 支持 **事务（Transaction）** 保证操作原子性
+- 操作是 **异步** 的，不阻塞主线程
+
+📦 大小限制：通常可以达到几十 MB 甚至上百 MB，比 localStorage 的 5MB 大得多。
+
+
+
+**🧩 核心概念介绍**
+
+IndexedDB 由几个重要对象组成 👇
+
+| 概念                         | 说明                          | 类比（SQL数据库）   |
+| ---------------------------- | ----------------------------- | ------------------- |
+| **Database（数据库）**       | 整个存储空间                  | 数据库              |
+| **Object Store（对象仓库）** | 类似表（Table），存放某类数据 | 表                  |
+| **Record（记录）**           | 存储的具体对象                | 行（Row）           |
+| **Key Path / Key Generator** | 数据主键（唯一标识符）        | 主键（Primary Key） |
+| **Index（索引）**            | 辅助搜索字段                  | 索引                |
+| **Transaction（事务）**      | 一组原子化操作                | 事务                |
+| **Cursor（游标）**           | 遍历数据的指针                | 游标查询            |
+
+
+
+**⚙️ IndexedDB 的使用流程**
+
+整个使用过程可以分为五步：
+
+```
+1️⃣ 打开或创建数据库
+2️⃣ 建表（定义对象仓库和索引）
+3️⃣ 向表中添加数据
+4️⃣ 查询 / 修改 / 删除
+5️⃣ 关闭数据库
+```
+
+
+
+**🧰 详细使用步骤**
+
+1️⃣ 打开或创建数据库
+
+```js
+//使用 `indexedDB.open(name, version)` 创建或打开数据库。
+const request = indexedDB.open("MyDB", 1); // 名称MyDB，版本1
+
+// 第一次打开 / 版本号变化时触发，用于初始化数据库结构
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  console.log("数据库升级或创建中");
+
+  // 创建对象仓库（类似于表）
+  const store = db.createObjectStore("users", { keyPath: "id" }); 
+  // 创建索引（可用于查询）
+  store.createIndex("name", "name", { unique: false });
+};
+
+// 打开成功
+request.onsuccess = (event) => {
+  const db = event.target.result;
+  console.log("数据库打开成功", db);
+};
+
+// 打开失败
+request.onerror = (event) => {
+  console.error("数据库打开失败", event);
+};
+
+
+//在上述代码当中db都作为一个局部变量存在，这是因为indexDB的打开是一个异步的操作。db可以使用promise的方式写在函数外，确保不为空
+//我们在这里给出一个小的封装实例
+
+function openDB(dbName, version = 1) {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open(dbName, version);
+
+    request.onupgradeneeded = event => {
+      const db = event.target.result;
+      if (!db.objectStoreNames.contains('users')) {
+        const store = db.createObjectStore('users', { keyPath: 'id' });
+        store.createIndex('name', 'name', { unique: false });
+      }
+    };
+
+    request.onsuccess = event => {
+      const db = event.target.result;
+      console.log('✅ 数据库已打开');
+      resolve(db); // <--- 这里返回数据库实例
+    };
+
+    request.onerror = event => {
+      console.error('❌ 打开数据库失败', event.target.error);
+      reject(event.target.error);
+    };
+  });
+}
+
+let dbInstance;
+
+openDB('MyDB', 1).then(db => {
+  dbInstance = db;
+  console.log('数据库连接成功', dbInstance);
+  addUser({ id: 1, name: 'Alice', age: 25 });
+});
+//之后我们就可以使用dbInstancc来访问IndexDB
+```
+
+
+
+2️⃣ 创建对象仓库（表）
+
+对象仓库（Object Store）相当于表格，用来存放一类数据。
+
+```js
+// 仅在 onupgradeneeded 中创建
+const store = db.createObjectStore("users", { keyPath: "id" });
+// 或自动生成主键
+// const store = db.createObjectStore("users", { autoIncrement: true });
+```
+
+为字段建立索引（方便按非主键字段查询）：
+
+```js
+store.createIndex("nameIndex", "name", { unique: false });
+store.createIndex("emailIndex", "email", { unique: true });
+```
+
+
+
+3️⃣ 新增数据
+
+```js
+const tx = db.transaction("users", "readwrite");
+const store = tx.objectStore("users");
+
+store.add({ id: 1, name: "Alice", age: 25 });
+store.add({ id: 2, name: "Bob", age: 30 });
+
+tx.oncomplete = () => console.log("数据写入成功");
+tx.onerror = () => console.error("写入失败");
+```
+
+
+
+4️⃣ 读取数据
+
+（1）通过主键查询
+
+```js
+const tx = db.transaction("users", "readonly");
+const store = tx.objectStore("users");
+
+const req = store.get(1);
+req.onsuccess = () => console.log(req.result);
+```
+
+（2）通过索引查询
+
+```js
+const index = store.index("nameIndex");
+const req = index.get("Alice");
+req.onsuccess = () => console.log(req.result);
+```
+
+
+
+5️⃣ 更新数据
+
+更新其实就是再调用一次 `put()`（同键会覆盖）：
+
+```js
+const tx = db.transaction("users", "readwrite");
+const store = tx.objectStore("users");
+store.put({ id: 1, name: "Alice", age: 26 }); // 修改 age
+```
+
+
+
+6️⃣ 删除数据
+
+```js
+const tx = db.transaction("users", "readwrite");
+const store = tx.objectStore("users");
+store.delete(1);
+```
+
+
+
+7️⃣ 遍历所有数据（游标 Cursor）
+
+```js
+const tx = db.transaction("users", "readonly");
+const store = tx.objectStore("users");
+
+store.openCursor().onsuccess = (event) => {
+  const cursor = event.target.result;
+  if (cursor) {
+    console.log(cursor.key, cursor.value);
+    cursor.continue(); // 继续遍历下一个
+  } else {
+    console.log("遍历结束");
+  }
+};
+```
+
+
+
+📊 常用操作总结表
+
+| 操作         | 方法                                  | 示例                          |
+| ------------ | ------------------------------------- | ----------------------------- |
+| 创建数据库   | `indexedDB.open(name, version)`       | `indexedDB.open('DB', 1)`     |
+| 创建对象仓库 | `db.createObjectStore(name, options)` | `{ keyPath: 'id' }`           |
+| 添加数据     | `store.add()`                         | `store.add({id:1, name:'A'})` |
+| 更新数据     | `store.put()`                         | `store.put({id:1, name:'B'})` |
+| 查询数据     | `store.get(key)`                      | `store.get(1)`                |
+| 删除数据     | `store.delete(key)`                   | `store.delete(1)`             |
+| 遍历数据     | `store.openCursor()`                  | 见上例                        |
+| 清空仓库     | `store.clear()`                       | `store.clear()`               |
+
+
+
+**💡 异步特性与 Promise 封装**
+
+IndexedDB 原生基于事件回调风格，比较繁琐。
+ 可以通过 `idb` 库简化为 Promise 风格（推荐）👇
+
+```bash
+npm install idb
+```
+
+```js
+
+import { openDB } from 'idb';
+
+const db = await openDB('MyDB', 1, {
+  upgrade(db) {
+    db.createObjectStore('users', { keyPath: 'id' });
+  },
+});
+
+// 写入
+await db.put('users', { id: 1, name: 'Alice' });
+
+// 读取
+const user = await db.get('users', 1);
+console.log(user);
+```
+
+🟢 `idb` 是最流行的 IndexedDB 封装库（被 Google 官方推荐）。
+
+
+
+**🧩 IndexedDB 的生命周期与升级机制**
+
+- **第一次打开数据库时** → 触发 `onupgradeneeded` → 创建表结构；
+- **下次打开相同版本** → 直接进入 `onsuccess`；
+- **版本号变更时** → `onupgradeneeded` 再次触发，可执行结构升级。
+
+示例：
+
+```js
+const request = indexedDB.open("MyDB", 2); // 版本 2
+request.onupgradeneeded = (event) => {
+  const db = event.target.result;
+  db.createObjectStore("orders", { keyPath: "id" });
+};
+```
+
+
+
+**📦 IndexedDB 的优缺点**
+
+| 优点               | 缺点                             |
+| ------------------ | -------------------------------- |
+| 大容量（数百 MB）  | API 原生写法繁琐                 |
+| 支持对象存储与索引 | 异步操作复杂                     |
+| 事务安全           | 兼容性在旧浏览器较差（IE不支持） |
+| 性能高、离线能力强 | 不适合存储简单 KV 数据           |
+
+
+
+**🧭  应用场景总结**
+
+| 场景                             | IndexedDB 作用                     |
+| -------------------------------- | ---------------------------------- |
+| 离线阅读类应用（新闻、博客）     | 缓存内容以支持离线                 |
+| 聊天 / 消息系统                  | 缓存消息、历史记录                 |
+| Web 办公应用（如 Notion、Figma） | 本地保存草稿、状态                 |
+| 图片、地图类应用                 | 缓存二进制资源                     |
+| 大数据前端缓存                   | 提升数据加载性能                   |
+| PWA 应用                         | 与 Service Worker 结合实现离线访问 |
+
+----
+
+
+
+#### 1.5 Cache Storage
+
+> 与 `Service Worker` 搭配，用于缓存静态资源（HTML、JS、CSS、图片等）。
+
+```js
+// 示例：在 Service Worker 中
+caches.open('my-cache').then(cache => {
+  cache.addAll([
+    '/index.html',
+    '/style.css',
+    '/script.js'
+  ]);
+});
+```
+
+⚡️ 特点：
+
+- 支持离线访问
+
+- 用于构建 PWA（Progressive Web App）
+
+- 不受 5MB 限制
+
+  
+
+**🧠 基础 API **
+
+🧱 1️⃣打开或创建一个缓存
+
+```
+const cache = await caches.open('my-cache-v1');
+```
+
+- 若不存在该缓存，则会自动创建。
+- 返回一个 `Cache` 对象。
+
+
+
+🧱2️⃣ 缓存请求与响应
+
+```
+await cache.add('/index.html'); // 自动请求并缓存响应
+await cache.addAll(['/index.html', '/main.js', '/style.css']);
+```
+
+或者手动存入响应：
+
+```
+const response = await fetch('/data.json');
+await cache.put('/data.json', response);
+```
+
+
+
+🧱 3️⃣匹配并读取缓存
+
+```
+const cachedResponse = await cache.match('/data.json');
+if (cachedResponse) {
+  const data = await cachedResponse.json();
+  console.log('来自缓存的数据:', data);
+}
+```
+
+
+
+🧱 4️⃣. 删除缓存条目
+
+```
+await cache.delete('/old-file.js');
+```
+
+
+
+🧱 5️⃣. 删除整个缓存仓库
+
+```
+await caches.delete('my-cache-v1');
+```
+
+
+
+🧱 6️⃣ 获取所有缓存仓库名称
+
+```
+const keys = await caches.keys();
+console.log(keys); // ["my-cache-v1", "my-cache-v2"]
+```
+
+
+
+#### 1.6 总结与对比
+
+| 功能         | Cookie         | localStorage       | sessionStorage | IndexedDB | Cache Storage |
+| ------------ | -------------- | ------------------ | -------------- | --------- | ------------- |
+| 数据类型     | 字符串         | 字符串             | 字符串         | 对象      | 文件资源      |
+| 持久性       | 可设置         | 永久               | 会话级         | 永久      | 永久          |
+| 大小限制     | ~4KB           | ~5MB               | ~5MB           | 几百MB    | 几百MB        |
+| 服务器可访问 | ✅              | ❌                  | ❌              | ❌         | ❌             |
+| 操作难度     | 较高           | 简单               | 简单           | 中等      | 中等          |
+| 场景         | 登录状态、会话 | 偏好设置、本地缓存 | 临时表单       | 离线数据  | 静态资源缓存  |
+
+------
+
+### 2. Web Worker
+
+>**Web Worker** 是一种在浏览器后台运行 JavaScript 的机制，它允许你在不阻塞主线程（UI线程）的情况下执行计算密集型任务。
+>
+>✅ Web Worker = 浏览器里的“后台线程”。
+>
+>🧩 类比理解：
+>
+>| 角色                | 功能                                   |
+>| ------------------- | -------------------------------------- |
+>| **主线程**          | 负责渲染 UI、响应用户操作、执行普通 JS |
+>| **Web Worker 线程** | 在后台运行 JS，不影响界面流畅度        |
+
+#### 2.1 Web Worker 的基本用法
+
+Web Worker 是一个独立的 JavaScript 文件，
+ 主线程通过消息机制与它通信。
+
+------
+
+**1️⃣ 主线程：创建 Worker**
+
+```js
+// main.js
+const worker = new Worker('worker.js');
+
+// 发送数据给 Worker
+worker.postMessage({ num: 1000000000 });
+
+// 接收 Worker 的消息
+worker.onmessage = event => {
+  console.log('来自 worker 的结果：', event.data);
+};
+```
+
+------
+
+**2️⃣ 子线程（worker.js）**
+
+```js
+// worker.js
+self.onmessage = event => {
+  const { num } = event.data;
+  let sum = 0;
+  for (let i = 0; i < num; i++) sum += i;
+  // 把结果发回主线程
+  self.postMessage(sum);
+};
+```
+
+------
+
+🧩 通信机制
+
+主线程和 Worker 之间通过 `postMessage()` 和 `onmessage` 通信：
+
+```
+主线程 <──postMessage──> Worker
+```
+
+它们之间的数据是 **拷贝传输**（结构化克隆算法），
+ 不会共享同一个对象（除非使用 SharedArrayBuffer）。
+
+------
+
+#### 2.2 **Web Worker 的生命周期**
+
+| 阶段   | 方法                          | 说明               |
+| ------ | ----------------------------- | ------------------ |
+| 创建   | `new Worker(url)`             | 创建后台线程       |
+| 通信   | `postMessage()` / `onmessage` | 发送与接收数据     |
+| 销毁   | `worker.terminate()`          | 主动结束线程       |
+| 自销毁 | `self.close()`                | 子线程内部结束自己 |
+
+------
+
+**🧩 使用场景**
+
+| 场景                 | 说明                                   |
+| -------------------- | -------------------------------------- |
+| ✅ **计算密集型任务** | 大量循环、数学计算、图像处理、加密解密 |
+| ✅ **数据解析**       | JSON 大文件解析、数据压缩、日志分析    |
+| ✅ **AI / ML**        | TensorFlow.js 模型推理、音频分析       |
+| ✅ **图像与视频处理** | 图片滤镜、WebAssembly 图像渲染         |
+| ✅ **地图与地理计算** | 地图路径规划、大量坐标计算             |
+
+------
+
+**Web Worker 的运行原理**
+
+浏览器在创建 Worker 时，会：
+
+1. 启动一个独立的线程；
+2. 加载指定的 JS 文件；
+3. 在沙箱环境中执行代码；
+4. 提供独立的 `self` 全局对象；
+5. 与主线程通过异步消息传递通信。
+
+------
+
+#### 2.3 类型与限制
+
+**1️⃣ 普通 Worker**
+
+> 用于运行独立 JS 脚本。
+
+```js
+new Worker('worker.js');
+```
+
+------
+
+**2️⃣ Shared Worker**
+
+> 多个页面或同源的 tab 可以共享同一个 Worker。
+
+```js
+const sharedWorker = new SharedWorker('shared.js');
+sharedWorker.port.postMessage('hello');
+sharedWorker.port.onmessage = e => console.log(e.data);
+```
+
+适合用于：
+
+- 多页面共享状态；
+- 跨标签通信；
+- 长期后台运行的任务。
+
+------
+
+
+**Web Worker 的限制**
+
+| 限制                                      | 原因                                                         |
+| ----------------------------------------- | ------------------------------------------------------------ |
+| ❌ 不能访问 DOM                            | 防止多线程同时修改界面造成冲突                               |
+| ❌ 不能访问 `window`、`document`、`parent` | Worker 运行在独立环境中                                      |
+| ✅ 可以访问                                | `self`, `XMLHttpRequest`, `fetch`, `setTimeout`, `IndexedDB` |
+| ❌ 同源限制                                | 只能加载同源脚本（除非 CORS 允许）                           |
+| 💾 传输开销                                | 大对象通信需要拷贝，会占用内存与时间                         |					
+
+----
+
+#### 2.4 sharedWorker
+>SharedWorker（共享工作线程）是一种特殊的 Web Worker，
+可以在**同源**的多个浏览上下文（如多个页面、iframe、标签页）之间共享一个后台线程。
+也就是说：
+**普通的 Web Worker 是 页面级别 的；**
+**SharedWorker 是 浏览器同源级别的**， 所以它可以被多个页面同时连接，共享数据或状态。
+
+**sharedWorker解决的问题**
+✅ 多页面通信
+>多个同源页面（如 a.html、b.html）可以通过同一个 SharedWorker 实现互相通信。
+>
+>比如一个聊天室网站打开多个窗口时，它们之间仍能共享在线状态。
+
+✅ 2. 数据共享
+
+>多个页面共享同一个内存上下文（如 WebSocket 连接、计算状态等），节省资源。
+
+✅ 3. 长连接共享
+
+>在同源多个页面中共享一个 WebSocket 连接，而不是每个页面都新建一个连接
+
+**工作原理**
+启动一个共享线程 new SharedWorker("worker.js")；
+
+各页面通过 worker.port 与该线程建立通信通道；
+
+SharedWorker 脚本通过 onconnect 事件管理多个连接端口；
+
+这些端口之间可以互相广播消息。
+
+**一个使用实例**
+假设我们有两个页面：a.html 和 b.html
+它们都连接到同一个共享 worker 文件 shared.js。
+```html
+📄 a.html
+<script>
+  const worker = new SharedWorker('shared.js');
+
+  // 通过 port 发送消息
+  worker.port.postMessage('Hello from A');
+
+  // 接收 SharedWorker 发来的消息
+  worker.port.onmessage = (e) => {
+    console.log('A 收到:', e.data);
+  };
+</script>
+
+📄 b.html
+<script>
+  const worker = new SharedWorker('shared.js');
+
+  worker.port.postMessage('Hi, I am B');
+
+  worker.port.onmessage = (e) => {
+    console.log('B 收到:', e.data);
+  };
+</script>
+```
+
+```js
+//📄 shared.js（共享线程逻辑）
+// 所有连接都会触发 onconnect
+onconnect = (event) => {
+  const port = event.ports[0];
+
+  console.log('新的连接建立');
+  port.postMessage('欢迎新客户端');
+
+  // 监听消息
+  port.onmessage = (e) => {
+    console.log('SharedWorker 收到:', e.data);
+    // 广播给所有连接的客户端
+    broadcast(e.data);
+  };
+
+  // 保存端口以便广播
+  ports.push(port);
+};
+
+const ports = [];
+
+function broadcast(message) {
+  for (const p of ports) {
+    p.postMessage('广播消息: ' + message);
+  }
+}
+```
+
+
+
+**⚠️ sharedWorker的注意事项**
+
+1. **Vite 打包时**
+    由于 SharedWorker 是一个独立脚本，要用：
+
+   ```js
+   new URL('@/workers/sharedWorker.js', import.meta.url)
+   ```
+
+   来正确解析路径。
+
+2. **同源限制**
+    所有连接到同一个 SharedWorker 的页面必须是 **同协议 + 同域名 + 同端口**。
+
+3. **Safari 不完全支持**
+    Safari 和 iOS Safari 对 SharedWorker 支持不佳（截至 2025）。
+
+----
+
+#### 2.5 self
+
+在 **Web Worker / Service Worker / SharedWorker** 环境中，
+ `self` 就是代表当前“线程全局作用域”的对象。
+
+⚠️**self**在其中并不需要声明或定义
+
+简单来说：
+
+| 环境           | 全局对象                              |
+| -------------- | ------------------------------------- |
+| 浏览器主线程   | `window`                              |
+| Web Worker     | `self`（即 WorkerGlobalScope）        |
+| Service Worker | `self`（即 ServiceWorkerGlobalScope） |
+| Shared Worker  | `self`（即 SharedWorkerGlobalScope）  |
+
+也就是说：
+
+> 在 Worker 环境中没有 `window`，
+>  所以浏览器提供了 `self` 来表示“当前 worker 的全局上下文”。
+
+
+
+**🧠 为什么没有 `window`？**
+
+因为：
+
+- `window` 是浏览器主线程中的顶层对象；
+- 而 Worker 运行在独立的线程中（独立于 UI 线程）；
+- Worker 不能访问 DOM，也没有 `document`、`alert()`、`window.localStorage` 等；
+- 但仍然需要一个“全局对象”来定义事件、方法、变量，于是引入了 `self`。
+
+
+
+**⚙️ 不同场景下的 `self`**
+
+| 类型               | 全称                         | 特征             | 常见事件                       |
+| ------------------ | ---------------------------- | ---------------- | ------------------------------ |
+| **Web Worker**     | `DedicatedWorkerGlobalScope` | 仅供一个页面使用 | `onmessage`, `postMessage`     |
+| **Shared Worker**  | `SharedWorkerGlobalScope`    | 多页面共享       | `onconnect`                    |
+| **Service Worker** | `ServiceWorkerGlobalScope`   | 充当浏览器代理   | `install`, `activate`, `fetch` |
+
+
+
+----
+
+
+
+### 3. Service Worker
+
+> **Service Worker 是一种独立于网页运行的后台脚本**，它充当了网页与网络之间的“中间代理层”。
+>  它可以拦截所有网页发出的网络请求，并决定：
+>
+> - 要不要去请求网络；
+> - 是否直接返回缓存；
+> - 是否在后台更新资源。
+
+换句话说：
+
+> 它让网页拥有「离线工作」的能力
+
+#### 3.1 核心特性
+
+| 特性           | 说明                                                      |
+| -------------- | --------------------------------------------------------- |
+| **独立线程**   | 不运行在主线程中，不会阻塞 UI                             |
+| **可拦截请求** | 可以代理网页的所有网络请求（fetch）                       |
+| **可缓存资源** | 可以将 HTML、CSS、JS、图片等静态资源缓存起来              |
+| **可离线访问** | 即使用户离线，也能从缓存返回页面                          |
+| **事件驱动**   | 通过生命周期事件（install、activate、fetch）控制逻辑      |
+| **必须 HTTPS** | 为了安全，Service Worker 只能在 HTTPS 或 localhost 上运行 |
+| **异步通信**   | 使用 `postMessage()` 与页面通信                           |
+
+
+
+#### 3.2 serviceWorker的生命周期
+
+```
+注册 -> 安装 -> 激活 -> 拦截请求
+```
+
+**1️⃣ 注册（Register）**
+
+在网页主线程注册一个 Service Worker：
+
+```js
+if ('serviceWorker' in navigator) {
+  navigator.serviceWorker.register('/sw.js')
+    .then(() => console.log('✅ Service Worker 注册成功'))
+    .catch(console.error);
+}
+```
+
+👉 浏览器会异步加载 `/sw.js` 脚本，并进入安装阶段。
+
+
+
+**2️⃣ 安装（Install）**
+
+Service Worker 第一次安装时触发，用来缓存静态资源。
+
+```js
+// sw.js
+self.addEventListener('install', (event) => {
+  console.log('📦 installing...');
+  event.waitUntil(
+    caches.open('my-cache-v1').then(cache => {
+      return cache.addAll([
+        '/',
+        '/index.html',
+        '/style.css',
+        '/main.js'
+      ]);
+    })
+  );
+});
+```
+
+> ✅ `event.waitUntil()` 告诉浏览器：
+>  “等我把缓存加完再算安装完成”。
+
+
+
+**3️⃣ 激活（Activate）**
+
+当新版本 Service Worker 替换旧版本时触发，用来清理旧缓存。
+
+```js
+self.addEventListener('activate', (event) => {
+  console.log('🚀 activating...');
+  event.waitUntil(
+    caches.keys().then(keys =>
+      Promise.all(
+        keys.filter(k => k !== 'my-cache-v1').map(k => caches.delete(k))
+      )
+    )
+  );
+});
+```
+
+
+
+**4️⃣ 拦截请求（Fetch）**
+
+一旦激活，所有页面的网络请求都会经过它。
+ 我们可以控制请求的去向：缓存优先 / 网络优先 / 离线回退。
+
+```js
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request).then(cacheRes => {
+      // 如果缓存中有，直接返回
+      if (cacheRes) return cacheRes;
+      // 否则去网络请求并缓存
+      return fetch(event.request).then(networkRes => {
+        return caches.open('my-cache-v1').then(cache => {
+          cache.put(event.request, networkRes.clone());
+          return networkRes;
+        });
+      });
+    })
+  );
+});
+```
+
+
+
+#### 3.4 Cache Storage API
+
+Service Worker 通常搭配 `Cache Storage` 使用，用于持久化缓存资源。
+
+常见操作：
+
+```js
+// 打开一个缓存仓库
+const cache = await caches.open('my-cache');
+
+// 添加资源
+await cache.addAll(['/index.html', '/main.js']);
+
+// 获取资源
+const response = await cache.match('/main.js');
+
+// 删除资源
+await cache.delete('/main.js');
+
+// 清理全部缓存
+const keys = await caches.keys();
+keys.forEach(key => caches.delete(key));
+```
+
+
+
+**🌐 典型缓存策略模式**
+
+| 策略                       | 描述                         | 适用场景              |
+| -------------------------- | ---------------------------- | --------------------- |
+| **Cache First**            | 优先读取缓存，失败再请求网络 | 静态资源（图标、JS）  |
+| **Network First**          | 优先请求网络，失败用缓存     | 动态内容（新闻、API） |
+| **Stale-While-Revalidate** | 先返回缓存，同时异步更新缓存 | 性能优化型应用        |
+| **Network Only**           | 总是请求网络                 | 登录验证等实时接口    |
+| **Cache Only**             | 永远读缓存                   | 离线专用资源          |
+
+📘 示例（Cache First）：
+
+```js
+self.addEventListener('fetch', (event) => {
+  event.respondWith(
+    caches.match(event.request)
+      .then(res => res || fetch(event.request))
+  );
+});
+```
+
+
+
+----
+
+### 4 浏览器渲染过程
+
+**1️⃣ 用户输入 URL 并发起请求**
+
+- 用户在地址栏输入 URL（如 `https://example.com`）。
+- 浏览器解析 URL：
+  - 协议（scheme）：`https`
+  - 主机名（host）：`example.com`
+  - 端口（port）：默认 443（HTTPS）
+  - 路径（path）：`/`
+  - 查询参数、锚点等
+
+
+
+**2️⃣ 浏览器检查缓存**
+
+浏览器首先检查是否命中缓存（HTTP 缓存 / Service Worker 缓存）：
+
+- **Memory Cache**：浏览器内存缓存
+- **Disk Cache**：硬盘缓存
+- **Service Worker Cache**：缓存的响应（PWA 场景）
+
+如果缓存可用且有效：
+
+- 直接使用缓存，不发网络请求
+- 否则进入下一步
+
+
+
+**3️⃣ DNS 解析（域名解析）**
+
+- 浏览器先检查本地 DNS 缓存
+- 如果没有缓存，向本地 DNS 服务器发送请求
+- 得到域名对应的 IP 地址
+
+
+
+**4️⃣ TCP 连接**
+
+- 浏览器使用 IP 地址与服务器建立 **TCP 连接**
+- 三次握手完成
+
+⚡ HTTPS 场景
+
+- 建立 **TLS/SSL 连接**：
+  - 客户端验证服务器证书
+  - 协商加密算法
+  - 完成安全通道
+
+
+
+**5️⃣ 发送 HTTP 请求**
+
+- 浏览器发起 **HTTP GET/POST 请求**
+- 包含：
+  - 请求头（User-Agent, Cookie, Accept 等）
+  - 请求体（POST 时）
+- 服务器返回响应：
+  - 状态码（200、301、404、500 等）
+  - 响应头（Content-Type, Cache-Control 等）
+  - 响应体（HTML / JSON / 图片等）
+
+
+
+**6️⃣ 浏览器接收 HTML 并开始解析**
+
+- 浏览器创建 **DOM 树（Document Object Model）**
+  - HTML 标签 → DOM 节点
+- 同时解析 **CSS** → 生成 **CSSOM（CSS Object Model）**
+- JS 脚本遇到 `<script>` 标签：
+  - 默认阻塞 HTML 解析，下载并执行 JS（可通过 async / defer 优化）
+- 构建 **Render Tree（渲染树）**
+  - DOM + CSSOM → render tree
+  - Render tree 包含可见节点信息（布局 + 样式）
+
+
+
+**7️⃣ JS 执行与渲染阻塞**
+
+- JS 会影响 DOM 或 CSSOM（如 `document.write()`、修改样式）
+- 因此浏览器必须暂停渲染，直到 JS 执行完（阻塞渲染）
+- **优化策略**：
+  - `<script defer>`：延迟 JS 执行，HTML 解析完再执行
+  - `<script async>`：异步加载，下载完成立即执行，不阻塞 HTML 解析
+
+
+
+**8️⃣ 布局（Layout / Reflow）**
+
+- 浏览器计算每个节点的 **位置和尺寸**
+- Render Tree 节点 → 页面坐标（x, y, width, height）
+
+
+
+**9️⃣ 绘制（Paint / Rasterize）**
+
+- 将每个节点绘制成像素（分层渲染）
+- GPU 加速：
+  - Chrome 会将部分层（Layers）交给 GPU 进行合成
+- Paint 后生成 **位图（Bitmap）**
+- 最终输出到屏幕
+
+
+
+**🔟 用户看到页面**
+
+- 浏览器完成首次渲染（First Paint / First Contentful Paint）
+- 随后可能执行：
+  - JS 动态修改 DOM（动态内容）
+  - 图片异步加载
+  - 懒加载等
+
+
+
+**💡 浏览器渲染优化点**
+
+1. **资源并行下载**：
+   - HTML 解析同时下载 CSS、JS、图片
+2. **渲染流水线**：
+   - HTML → DOM → CSSOM → Render Tree → Layout → Paint → Composite
+3. **缓存利用**：
+   - Service Worker、HTTP 缓存、Memory Cache
+4. **异步加载**：
+   - JS defer/async、懒加载图片
+5. **GPU 合成**：
+   - CSS transform、opacity 直接用 GPU，不触发重绘
+
+
+
+**📌 简单流程图**
+
+```
+用户输入 URL
+      ↓
+浏览器检查缓存（Memory / Disk / SW）
+      ↓
+DNS 解析 → 获取 IP
+      ↓
+TCP / TLS 建立连接
+      ↓
+发送 HTTP 请求 → 服务器响应
+      ↓
+解析 HTML → 构建 DOM
+      ↓
+解析 CSS → 构建 CSSOM
+      ↓
+DOM + CSSOM → Render Tree
+      ↓
+执行 JS → 可能修改 DOM / CSSOM
+      ↓
+Layout / Reflow → 计算节点位置尺寸
+      ↓
+Paint / Composite → 绘制像素到屏幕
+      ↓
+用户看到页面
+```
+
+## 九、网络
+
+### 1. Http缓存
+
+> 浏览器在访问一个资源（如 `index.js`、`style.css` 或图片）时，会先检查本地是否有缓存副本，
+>  如果有，就可能直接使用，以**减少网络请求**、**加快页面加载**。
+
+HTTP 缓存主要分为两种机制：
+
+| 类型                            | 是否向服务器发请求 | 是否使用本地缓存           | 主要字段                   |
+| ------------------------------- | ------------------ | -------------------------- | -------------------------- |
+| **强缓存 (Strong Cache)**       | ❌ 不发请求         | ✅ 直接用本地缓存           | `Expires`、`Cache-Control` |
+| **协商缓存 (Negotiated Cache)** | ✅ 发请求           | ✅ 服务器返回 304，不传数据 | `ETag`、`Last-Modified`    |
+
+**1️⃣ 强缓存（Strong Cache）**
+
+🧠 实现原理
+
+浏览器在加载资源时，先根据响应头判断是否命中强缓存：
+
+- **命中** → 直接使用本地缓存，不发送请求；
+- **未命中** → 发送网络请求。
+
+📦 关键响应头字段
+
+----
+
+➡️`Expires`（HTTP/1.0）
+
+```
+Expires: Wed, 04 Nov 2025 12:00:00 GMT
+```
+
+表示缓存到期的**绝对时间**。
+ ⚠️ 缺点：依赖客户端时间，如果用户系统时间不准会出问题。
+
+----
+
+- `Cache-Control`（HTTP/1.1）
+
+```
+Cache-Control: max-age=3600, public
+```
+
+表示缓存有效期（相对时间，单位秒）。
+ 常见取值：
+
+`max-age=3600` → 缓存 1 小时；
+
+`no-cache` → 不使用强缓存，但仍可协商缓存；
+
+`no-store` → 不使用任何缓存；
+
+`public` → 可以被代理服务器缓存；
+
+`private` → 只能被浏览器缓存。
+
+👉 若两者同时存在，`Cache-Control` 优先。当请求资源时：
+
+1. 查找缓存；
+2. 如果未过期（`now < response_time + max-age`），则命中强缓存；
+3. 直接从本地取资源，状态码为 **200 (from disk cache / memory cache)**。
+
+
+
+**2️⃣ 协商缓存（Negotiated Cache）**
+
+当强缓存失效后，浏览器会发起请求，但会带上**缓存标识字段**，让服务器判断资源是否有变化。
+
+📦 关键请求/响应头字段
+
+**`Last-Modified` / `If-Modified-Since`**
+
+- 服务器响应：
+
+  ```
+  Last-Modified: Wed, 03 Nov 2025 10:00:00 GMT
+  ```
+
+- 浏览器下次请求时带上：
+
+  ```
+  If-Modified-Since: Wed, 03 Nov 2025 10:00:00 GMT
+  ```
+
+服务器对比文件的最后修改时间：
+
+- 若未修改 → 返回 `304 Not Modified`；
+- 若修改 → 返回新的资源内容（200）。
+
+⚠️ 缺点：时间精度不高（秒级），文件即使内容未变但时间变化也会被认为不同。
+
+
+
+**`ETag` / `If-None-Match`**
+
+- 服务器响应：
+
+  ```
+  ETag: "abc123"
+  ```
+
+  这是文件内容的唯一标识（hash 值）。
+
+- 浏览器下次请求时带上：
+
+  ```
+  If-None-Match: "abc123"
+  ```
+
+服务器比较：
+
+- 若一致 → 返回 `304 Not Modified`
+- 若不一致 → 返回新内容。
+
+⚙️ `ETag` 优先级高于 `Last-Modified`。
+
+
+
+3️⃣完整的缓存判断流程图
+
+```
+        ┌───────────────────────────────┐
+        │        请求资源               │
+        └─────────────┬─────────────────┘
+                      ↓
+         是否命中强缓存？(Cache-Control / Expires)
+                      │
+            ┌─────────┴─────────┐
+            │                   │
+           是                   否
+            │                   │
+ 使用本地缓存(200 from cache)   发送请求
+                                │
+                                ↓
+             是否命中协商缓存？(ETag / Last-Modified)
+                                │
+                  ┌─────────────┴─────────────┐
+                  │                           │
+                 是                           否
+                  │                           │
+          返回304使用缓存              返回200新资源
+```
+
+
+
+区别总结
+
+| 对比项         | 强缓存                      | 协商缓存                 |
+| -------------- | --------------------------- | ------------------------ |
+| 是否发请求     | ❌ 否                        | ✅ 是                     |
+| 服务端是否参与 | 否                          | 是                       |
+| 状态码         | 200 (from cache)            | 304                      |
+| 关键字段       | `Expires`, `Cache-Control`  | `Last-Modified`, `ETag`  |
+| 优先级         | `Cache-Control` > `Expires` | `ETag` > `Last-Modified` |
+
+
+
+开发实践建议
+
+✅ **推荐设置：**
+
+```yaml
+Cache-Control: max-age=31536000, immutable
+ETag: "hash-value"
+```
+
+✅ **构建时配合文件指纹（hash）**
+ 前端打包时生成：
+
+```
+app.abc123.js
+app.abc123.css
+```
+
+----
+
+
+
+### 2. Http1/2/3
+
+#### 2.1 HTTP 协议演化背景
+
+HTTP（HyperText Transfer Protocol）是浏览器和服务器之间通信的协议。
+ 它并非独立存在，而是依赖底层传输层协议：
+
+| HTTP 版本     | 底层传输协议         |
+| ------------- | -------------------- |
+| HTTP/1.0、1.1 | TCP                  |
+| HTTP/2        | TCP                  |
+| HTTP/3        | **QUIC（基于 UDP）** |
+
+
+
+#### 2.2 HTTP/1.x：性能瓶颈的起点
+
+1️⃣ 特点
+
+- **基于 TCP + 请求-响应模型**
+- **短连接（HTTP/1.0）**：每次请求都要重新建立 TCP 连接。
+- **长连接（HTTP/1.1）**：`Connection: keep-alive`，可以复用 TCP 连接。
+- **管线化（pipelining）**：允许多个请求同时发送，但仍存在队头阻塞（Head-of-Line Blocking）。
+
+2️⃣ 核心问题
+
+| 问题             | 描述                                                         |
+| ---------------- | ------------------------------------------------------------ |
+| **队头阻塞**     | 同一个 TCP 连接内，请求是按顺序响应的，一个慢响应会阻塞后续响应。 |
+| **连接资源浪费** | 浏览器为并发加载资源通常会开 6~8 个 TCP 连接（同域）。       |
+| **头部冗余**     | 每次请求都会携带重复的 HTTP Header（如 Cookie、User-Agent）。 |
+| **文本协议**     | 报文无法被压缩，浪费带宽。                                   |
+
+⚠️ 例子
+
+一个网页包含 100 张图片，HTTP/1.1 可能会：
+
+- 同时打开多个 TCP 连接；
+- 每个连接只能排队串行返回响应；
+- 导致网络资源浪费、加载慢。
+
+
+
+#### 2.3 HTTP/2：多路复用的时代
+
+HTTP/2 仍然基于 TCP，但对传输层以上的部分进行了**二进制分帧重构**。
+
+1️⃣ 核心改进
+
+| 特性                          | 作用                                                         | 类比说明                                   |
+| ----------------------------- | ------------------------------------------------------------ | ------------------------------------------ |
+| **二进制分帧**                | HTTP/2 将请求与响应拆分成二进制帧（Frame），数据结构化、可压缩。 | 类似把文本换成更高效的二进制协议。         |
+| **多路复用（Multiplexing）**  | 多个请求共用一个 TCP 连接，每个流（Stream）有独立 ID，不互相阻塞。 | 类似一条高速公路多车道行驶。               |
+| **头部压缩（HPACK）**         | 利用静态表与动态表存储头字段，减少重复 Header 传输。         | 类似只传变化的部分。                       |
+| **服务器推送（Server Push）** | 服务器可在客户端请求前推送资源。                             | 比如请求 HTML 时，服务器提前推送 CSS、JS。 |
+
+2️⃣ 解决的问题
+
+✅ 解决了 HTTP/1 的**队头阻塞（应用层）**
+ ✅ 降低了请求头重复传输的成本
+ ✅ 显著减少 TCP 连接数量
+
+⚠️ 但仍存在问题
+
+HTTP/2 依旧基于 TCP，因此：
+
+- 若一个 TCP 包丢失，会导致**整个连接内的所有请求阻塞（TCP 层队头阻塞）**。
+- TCP 握手 + TLS 握手仍需多次往返（RTT）。
+
+
+
+#### 2.4 HTTP/3：基于 QUIC 的新时代
+
+1️⃣ 基础：QUIC 协议（Quick UDP Internet Connections）
+
+- 由 Google 开发；
+- 基于 **UDP**；
+- 集成了 **TLS 1.3**；
+- 目标：解决 TCP 无法彻底解决的性能瓶颈。
+
+2️⃣ 核心特性
+
+| 特性                                | 说明                                                    |
+| ----------------------------------- | ------------------------------------------------------- |
+| **基于 UDP，用户态实现可靠传输**    | 不再受 TCP 队头阻塞影响；每个流独立传输。               |
+| **0-RTT/1-RTT 握手**                | TLS 1.3 集成，首次连接仅需 1 次往返，后续连接可 0-RTT。 |
+| **多路复用更彻底**                  | 丢包只影响单个流，不影响整个连接。                      |
+| **连接迁移 (Connection Migration)** | 支持网络切换（如从 Wi-Fi → 4G）保持连接不断。           |
+| **内建加密**                        | 所有连接强制加密（不再分明文/HTTPS）。                  |
+
+3️⃣ 优势总结
+
+| 对比项   | HTTP/2 (TCP) | HTTP/3 (QUIC/UDP)    |
+| -------- | ------------ | -------------------- |
+| 队头阻塞 | TCP 层仍存在 | 无（每个流独立）     |
+| 握手延迟 | 多个 RTT     | 0-RTT/1-RTT          |
+| 连接迁移 | 不支持       | ✅ 支持               |
+| 加密     | 可选（TLS）  | 内置（强制加密）     |
+| 性能     | 较高         | 更高（移动网络友好） |
+
+
+
+#### 2.5 三代协议核心区别总表
+
+| 对比维度   | HTTP/1.1    | HTTP/2         | HTTP/3         |
+| ---------- | ----------- | -------------- | -------------- |
+| 传输协议   | TCP         | TCP            | UDP (QUIC)     |
+| 连接复用   | 多连接      | 单连接多路复用 | 单连接多路复用 |
+| 队头阻塞   | 应用层      | TCP 层         | 无             |
+| 报文格式   | 文本        | 二进制帧       | 二进制帧       |
+| 头部压缩   | 无          | HPACK          | QPACK          |
+| 加密       | 可选（TLS） | 可选（TLS）    | 默认加密       |
+| 连接建立   | 多次握手    | 多次握手       | 0-RTT / 1-RTT  |
+| 服务器推送 | ❌           | ✅              | ✅              |
+| 连接迁移   | ❌           | ❌              | ✅              |
+| 性能表现   | 低          | 高             | 更高           |
+
+
+
+💡 形象比喻总结
+
+| 协议         | 类比场景                                               |
+| ------------ | ------------------------------------------------------ |
+| **HTTP/1.1** | 多条单车道公路（每辆车排队堵车）                       |
+| **HTTP/2**   | 一条多车道高速公路（同一连接内多车并行，但遇事故全堵） |
+| **HTTP/3**   | 多条独立车道的悬空轨道（某条轨道出问题不影响其他）     |
+
+
+
+✅ 实际应用情况（截至 2025）
+
+| 协议     | 支持情况                                                     |
+| -------- | ------------------------------------------------------------ |
+| HTTP/1.1 | 仍是最广泛支持（几乎所有服务器）                             |
+| HTTP/2   | 主流浏览器、CDN、Nginx、Node.js 均支持                       |
+| HTTP/3   | Chrome、Edge、Safari 均默认启用；Cloudflare、Google、AWS 等已普遍支持 |
