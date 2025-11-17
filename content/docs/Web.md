@@ -1,3 +1,13 @@
+---
+title: 前端
+date:  2025/10/13
+description: 前端八股总结
+image: /blogs-img/web.png
+alt: JS&&VUE&REACT
+ogImage: /blogs-img/web.png
+tags: ['web','Vue','React','JavaScript']
+published: true
+---
 ## 一、JS相关
 
 ### 闭包
