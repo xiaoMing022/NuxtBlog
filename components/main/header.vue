@@ -31,33 +31,24 @@ function isActive(path: string) {
             分类
           </NuxtLink>
         </li>
+        <li>
+          <NuxtLink to="/projects" :class="{ underline: isActive('/projects') }">
+            项目
+          </NuxtLink>
+        </li>
         <li title="About Me">
-          <NuxtLink
-            to="/about"
-            aria-label="About me"
-            :class="{ underline: $route.path === '/about' }"
-          >
+          <NuxtLink to="/about" aria-label="About me" :class="{ underline: $route.path === '/about' }">
             Me
           </NuxtLink>
         </li>
         <li>
           <ClientOnly>
-            <button
-              v-if="colorMode.value === 'light'"
-              name="light-mode"
-              title="Light"
-              class="hover:scale-110 transition-all ease-out hover:cursor-pointer"
-              @click="onClick('dark')"
-            >
+            <button v-if="colorMode.value === 'light'" name="light-mode" title="Light"
+              class="hover:scale-110 transition-all ease-out hover:cursor-pointer" @click="onClick('dark')">
               <Icon name="icon-park:moon" size="20" />
             </button>
-            <button
-              v-if="colorMode.value === 'dark'"
-              name="dark-mode"
-              title="Dark"
-              class="hover:scale-110 transition-all ease-out hover:cursor-pointer"
-              @click="onClick('light')"
-            >
+            <button v-if="colorMode.value === 'dark'" name="dark-mode" title="Dark"
+              class="hover:scale-110 transition-all ease-out hover:cursor-pointer" @click="onClick('light')">
               <Icon name="noto:sun" size="20" />
             </button>
             <template #fallback>
