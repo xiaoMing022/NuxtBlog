@@ -1,8 +1,19 @@
 <script setup lang="ts">
 import type { BlogPost } from '@/types/blog'
 import { navbarData, seoData } from '~/data'
+import { ref, computed } from 'vue'
 
 const { path } = useRoute()
+
+// --- 移动端目录控制状态 ---
+const showMobileToc = ref(false)
+
+// 点击移动端目录链接后，关闭弹窗
+const handleMobileTocClick = () => {
+  showMobileToc.value = false
+}
+
+// ------------------------
 
 const { data: articles, error } = await useAsyncData(`blog-post-${path}`, () =>
   queryCollection('content').path(path).first(),
@@ -24,70 +35,23 @@ const data = computed<BlogPost>(() => {
   }
 })
 
-const art = await queryCollection('content').path(path).first()
-
-const links = art?.body?.toc?.links || []
-
-
+// 获取目录链接
+const links = computed(() => articles.value?.body?.toc?.links || [])
 
 useHead({
   title: data.value.title || '',
   meta: [
     { name: 'description', content: data.value.description },
-    {
-      name: 'description',
-      content: data.value.description,
-    },
-    // Test on: https://developers.facebook.com/tools/debug/ or https://socialsharepreview.com/
-    { property: 'og:site_name', content: navbarData.homeTitle },
-    { property: 'og:type', content: 'website' },
-    {
-      property: 'og:url',
-      content: `${seoData.mySite}/${path}`,
-    },
-    {
-      property: 'og:title',
-      content: data.value.title,
-    },
-    {
-      property: 'og:description',
-      content: data.value.description,
-    },
-    {
-      property: 'og:image',
-      content: data.value.ogImage || data.value.image,
-    },
-    // Test on: https://cards-dev.twitter.com/validator or https://socialsharepreview.com/
-    { name: 'twitter:site', content: '@qdnvubp' },
+    { property: 'og:title', content: data.value.title },
+    { property: 'og:description', content: data.value.description },
+    { property: 'og:image', content: data.value.ogImage || data.value.image },
     { name: 'twitter:card', content: 'summary_large_image' },
-    {
-      name: 'twitter:url',
-      content: `${seoData.mySite}/${path}`,
-    },
-    {
-      name: 'twitter:title',
-      content: data.value.title,
-    },
-    {
-      name: 'twitter:description',
-      content: data.value.description,
-    },
-    {
-      name: 'twitter:image',
-      content: data.value.ogImage || data.value.image,
-    },
-  ],
-  link: [
-    {
-      rel: 'canonical',
-      href: `${seoData.mySite}/${path}`,
-    },
+    { name: 'twitter:title', content: data.value.title },
+    { name: 'twitter:description', content: data.value.description },
+    { name: 'twitter:image', content: data.value.ogImage || data.value.image },
   ],
 })
 
-// console.log(articles.value)
-
-// Generate OG Image
 defineOgImageComponent('Test', {
   headline: 'Liu Blog 👋',
   title: articles.value?.seo.title || '',
@@ -97,66 +61,148 @@ defineOgImageComponent('Test', {
 </script>
 
 <template>
-  <!-- 1. 外层容器：添加 overflow-x-hidden 防止意外横向滚动，减少移动端 padding 为 px-4 -->
-  <div class="px-4 sm:px-6 container max-w-5xl mx-auto overflow-x-hidden">
+  <!-- 外层容器（不能有 overflow） -->
+  <div class="px-4 sm:px-6 container max-w-5xl mx-auto relative">
 
-    <!-- Header：确保宽度由父级控制 -->
+    <!-- Header -->
     <BlogHeader 
-      :title="data.title" 
-      :image="data.image" 
-      :alt="data.alt" 
+      :title="data.title"
+      :image="data.image"
+      :alt="data.alt"
       :date="data.date"
-      :description="data.description" 
-      :tags="data.tags" 
-      class="mb-8 w-full max-w-full" 
+      :description="data.description"
+      :tags="data.tags"
+      class="mb-8 w-full max-w-full"
     />
 
-    <!-- 2. 内容区域：移除原有的 px-6 (防止双重 padding)，优化 Grid 结构 -->
-    <div class="w-full mx-auto grid lg:grid-cols-12 grid-cols-1 gap-y-8 lg:gap-x-12 pb-10">
+    <!-- 主体两栏布局 -->
+    <div class="grid lg:grid-cols-12 grid-cols-1 gap-y-8 lg:gap-x-12 pb-10">
 
-      <!-- 侧边目录 (TOC)：在大屏显示，小屏隐藏 -->
-      <div
-        class="hidden lg:block lg:col-span-3 sticky top-24 self-start h-[calc(100vh-6rem)] overflow-auto scrollbar-thin scrollbar-thumb-gray-500 scrollbar-track-gray-200">
-        <div class="border dark:border-gray-800 p-3 rounded-md min-w-[200px] dark:bg-slate-900">
-          <h1 class="text-base font-bold mb-3 border-b dark:border-gray-800 pb-2">Table Of Content</h1>
-          <div v-for="link in links" :key="link.id">
-            <NuxtLink :to="`#${link.id}`" class="block mb-3 hover:underline">
-              <h2 class="text-base font-semibold">{{ link.text }}</h2>
-            </NuxtLink>
-            <div v-if="link.children && link.children.length" class="pl-4">
-              <NuxtLink v-for="child in link.children" :key="child.id" :to="`#${child.id}`"
-                class="block text-sm mb-3 hover:underline"> <!-- text-m 改为 text-sm -->
-                <h3 class="text-base font-semibold">{{ child.text }}</h3>
+      <!-- 侧边栏（sticky 必须放这里，并且祖先不能 overflow） -->
+      <aside class="hidden lg:block lg:col-span-3 self-start sticky top-24 max-h-[calc(100vh-6rem-1rem)] overflow-y-auto px-2">
+        <div class="border dark:border-gray-800 p-4 rounded-lg bg-white/50 dark:bg-slate-900/50 backdrop-blur-sm">
+          <h1 class="text-lg font-bold mb-3 border-b dark:border-gray-800 pb-2 uppercase text-gray-500">
+            目录
+          </h1>
+
+          <nav>
+            <div v-for="link in links" :key="link.id" class="mb-2">
+              <NuxtLink 
+                :to="`#${link.id}`" 
+                class="block text-base text-gray-600 dark:text-gray-400 hover:text-blue-600 transition-colors line-clamp-1"
+              >
+                {{ link.text }}
               </NuxtLink>
-            </div>
-          </div>
-        </div>
-      </div>
 
-      <!-- 文章正文 -->
-      <div class="col-span-1 lg:col-span-9">
-        <!-- 3. Prose 优化：
-             - break-words: 强制长单词换行
-             - max-w-none: 让 grid 控制宽度，而不是 prose 自己限制
-             - prose-pre: 修复代码块在移动端撑开页面的问题
-             - prose-img: 确保图片不超过容器
-        -->
-        <div
-          class="prose prose-sm sm:prose-base md:prose-lg max-w-none 
-                 prose-zinc dark:prose-invert 
-                 prose-h1:no-underline 
-                 prose-img:rounded-lg prose-img:max-w-full 
-                 break-words 
-                 prose-pre:max-w-[calc(100vw-2rem)] prose-pre:overflow-x-auto">
-          
+              <!-- 子标题 -->
+              <div 
+                v-if="link.children?.length" 
+                class="pl-3 mt-1 border-l border-gray-200 dark:border-gray-800"
+              >
+                <NuxtLink 
+                  v-for="child in link.children"
+                  :key="child.id"
+                  :to="`#${child.id}`"
+                  class="block text-sm text-gray-500 hover:text-blue-600 py-0.5 transition-colors line-clamp-1"
+                >
+                  {{ child.text }}
+                </NuxtLink>
+              </div>
+            </div>
+          </nav>
+        </div>
+      </aside>
+
+      <!-- 内容 -->
+      <main class="col-span-1 lg:col-span-9">
+        <div class="prose prose-sm sm:prose-base md:prose-lg max-w-none prose-zinc dark:prose-invert">
           <ContentRenderer v-if="articles" :value="articles">
             <template #empty>
               <p>No content found.</p>
             </template>
           </ContentRenderer>
         </div>
-      </div>
+      </main>
 
     </div>
+
+    <!-- 移动端按钮（fixed 正常工作） -->
+    <button 
+      @click="showMobileToc = true"
+      class="lg:hidden fixed bottom-6 right-6 z-40 bg-blue-600 text-white p-3 rounded-full shadow-lg hover:bg-blue-700 active:scale-95 transition-all"
+    >
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+      </svg>
+    </button>
+
+    <!-- 移动端目录 -->
+    <Teleport to="body">
+      <div
+        v-if="showMobileToc"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 lg:hidden"
+        @click="showMobileToc = false"
+      ></div>
+
+      <div
+        class="fixed top-0 right-0 h-full w-64 bg-white dark:bg-slate-900 shadow-2xl z-50 transform transition-transform duration-300 lg:hidden overflow-y-auto p-6"
+        :class="showMobileToc ? 'translate-x-0' : 'translate-x-full'"
+      >
+        <div class="flex items-center justify-between mb-6">
+          <h2 class="text-lg font-bold">文章目录</h2>
+          <button @click="showMobileToc = false" class="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        </div>
+
+        <nav>
+          <div v-for="link in links" :key="link.id" class="mb-3">
+            <NuxtLink 
+              :to="`#${link.id}`"
+              class="block text-base font-medium text-gray-800 dark:text-gray-200 hover:text-blue-600"
+              @click="handleMobileTocClick"
+            >
+              {{ link.text }}
+            </NuxtLink>
+
+            <div 
+              v-if="link.children?.length"
+              class="pl-4 mt-2 border-l-2 border-gray-100 dark:border-gray-800"
+            >
+              <NuxtLink 
+                v-for="child in link.children"
+                :key="child.id"
+                :to="`#${child.id}`"
+                class="block text-sm text-gray-500 py-1 hover:text-blue-600"
+                @click="handleMobileTocClick"
+              >
+                {{ child.text }}
+              </NuxtLink>
+            </div>
+          </div>
+        </nav>
+      </div>
+    </Teleport>
+
   </div>
 </template>
+
+
+<style scoped>
+/* 确保 scrollbar 样式美观 */
+.scrollbar-thin::-webkit-scrollbar {
+  width: 2px;
+}
+.scrollbar-thin::-webkit-scrollbar-track {
+  background: transparent;
+}
+.scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 20px;
+}
+.dark .scrollbar-thin::-webkit-scrollbar-thumb {
+  background-color: #374151;
+}
+</style>
