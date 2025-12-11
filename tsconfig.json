@@ -1,4 +1,9 @@
 {
   // https://nuxt.com/docs/guide/concepts/typescript
-  "extends": "./.nuxt/tsconfig.json"
+  "extends": "./.nuxt/tsconfig.json",
+  "compilerOptions": {
+    // 显式指定解析和类型来源，避免编辑器无法识别 vue 模块
+    "moduleResolution": "Bundler",
+    "types": ["@types/node", "vue"]
+  }
 }

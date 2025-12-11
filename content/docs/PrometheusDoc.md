@@ -1,5 +1,5 @@
 ---
-title: PrometheusDoc学习记录
+title: Prometheus
 date:  2025/9/18
 description: 了解Prometheus的使用
 image: /blogs-img/promethues.png

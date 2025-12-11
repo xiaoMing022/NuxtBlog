@@ -1,12 +1,12 @@
 ---
 title: Prometheus学习记录
-date:  2025/9/18
+date:  2024/9/18
 description: 了解Prometheus的使用
 image: /blogs-img/promethues.png
 alt: How to fix vuex type issue
 ogImage: /blogs-img/promethues.png
 tags: ['promethues']
-published: true
+published: false
 ---
 
 # Prometheus

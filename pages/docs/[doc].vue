@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import type { BlogPost } from '@/types/blog'
-import { navbarData, seoData } from '~/data'
 import { ref, computed } from 'vue'
 
 const { path } = useRoute()
@@ -62,7 +61,7 @@ defineOgImageComponent('Test', {
 
 <template>
   <!-- 外层容器（不能有 overflow） -->
-  <div class="px-4 sm:px-6 container max-w-5xl mx-auto relative">
+  <div class="px-4 sm:px-6 container mx-auto relative">
 
     <!-- Header -->
     <BlogHeader 

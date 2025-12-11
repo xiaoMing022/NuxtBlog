@@ -1,4 +1,6 @@
 <script setup lang="ts">
+  import dudu from '~/assets/images/dudu.png'
+  import blog from '~/assets/images/blog.png'
 // 1. 定义更新后的数据接口
 interface Website {
   title: string;
@@ -13,26 +15,26 @@ interface Website {
 // 2. 模拟数据 (请替换为你真实的图片和链接)
 const websites: Website[] = [
   {
-    title: 'Dudu Home',
-    description: '个人主页与导航中心，集成了所有服务的入口，采用 Nuxt 3 构建。',
+    title: 'Dudu Agent',
+    description: '一个基于Dify的智能助手，支持多种语言，多种模型，多种功能。',
     url: 'https://dudu.liu2002.top/home',
     github: 'https://github.com/yourname/dudu-home',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop', // 示例图
-    tags: ['Dashboard', 'Vue', 'Personal'],
+    image: dudu, // 示例图
+    tags: ['React Native', 'Dify', 'Agent'],
     status: '运行中',
   },
   {
-    title: 'Blog Space',
+    title: 'Nuxt Blog',
     description: '我的技术博客，记录学习笔记与生活随想，支持 Markdown 渲染。',
-    url: 'https://blog.liu2002.top',
+    url: 'https://liu2002.top',
     github: 'https://github.com/yourname/blog',
-    image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop', // 示例图
+    image: blog, // 示例图
     tags: ['Nuxt Content', 'Tailwind'],
     status: '运行中',
   },
   {
-    title: 'Admin System',
-    description: '内容管理后台，用于发布文章和管理评论数据。',
+    title: '敏感数据出境风险监测系统',
+    description: '用于监测敏感数据出境风险，支持数据分类、风险评估、风险预警等功能。',
     url: '#',
     // github: '...', // 如果没有开源，不填这个字段即可
     image: 'https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=800&auto=format&fit=crop',
@@ -66,7 +68,7 @@ const getStatusColor = (status: string) => {
           <img 
             :src="site.image" 
             :alt="site.title"
-            class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+            class="w-full h-full object-contain transition-transform duration-500 group-hover:scale-105"
           />
           
           <!-- 状态徽标 (悬浮在图片右上角) -->

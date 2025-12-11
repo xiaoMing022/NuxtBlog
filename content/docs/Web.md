@@ -1,7 +1,7 @@
 ---
 title: 前端
 date:  2025/10/13
-description: 前端八股总结
+description: 前端学习手册
 image: /blogs-img/web.png
 alt: JS&&VUE&REACT
 ogImage: /blogs-img/web.png
