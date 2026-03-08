@@ -30,9 +30,9 @@ const { data } = await useAsyncData('recent-post', () =>
   queryCollection('content')
     .all()
     .then((data) => {
-
       console.log(data)
       return data
+        .filter((item) => /^\/docs\//.test(item.path))
         .sort((a, b) => {
           const aDate = parseDate(a.meta.date as string)
           const bDate = parseDate(b.meta.date as string)
@@ -41,10 +41,6 @@ const { data } = await useAsyncData('recent-post', () =>
         .slice(0,3)
     }),
 )
-console.log("文章数据：")
-console.log(data)
-console.log("文章数据：")
-
 const formattedData = computed(() => {
   return data.value?.map((articles) => {
     const meta = articles.meta as unknown as BlogPost
@@ -81,7 +77,7 @@ useHead({
       <Icon name="mdi:star-three-points-outline" size="2em" class="text-black dark:text-zinc-300" />
       <h2 class="text-4xl font-semibold text-black dark:text-zinc-300">最近</h2>
     </div>
-    <NuxtLink to="/doc" class="text-sky-700 dark:text-sky-400 hover:underline mb-4 inline-block">查看所有文章 &rarr;</NuxtLink>
+    <NuxtLink to="/docs" class="text-sky-700 dark:text-sky-400 hover:underline mb-4 inline-block">查看所有文章 &rarr;</NuxtLink>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
       
       <template v-for="post in formattedData" :key="post.title">

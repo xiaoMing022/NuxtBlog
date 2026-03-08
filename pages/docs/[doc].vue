@@ -37,6 +37,10 @@ const data = computed<BlogPost>(() => {
 // 获取目录链接
 const links = computed(() => articles.value?.body?.toc?.links || [])
 
+console.log("文章：")
+console.log(articles.value?.title)
+
+
 useHead({
   title: data.value.title || '',
   meta: [

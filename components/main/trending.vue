@@ -1,8 +1,9 @@
 <script lang="ts" setup>
 import type { BlogPost } from '~/types/blog'
 
+// @ts-ignore
 const { data } = await useAsyncData('trending-post', () =>
-  queryCollection('content').limit(3).all(),
+  queryCollection('content').limit(5).all(),
 )
 
 const formattedData = computed(() => {
@@ -42,17 +43,8 @@ useHead({
     </div>
     <div class="grid grid-cols-1">
       <template v-for="post in formattedData" :key="post.title">
-        <ArchiveCard
-          :path="post.path"
-          :title="post.title"
-          :date="post.date"
-          :description="post.description"
-          :image="post.image"
-          :alt="post.alt"
-          :og-image="post.ogImage"
-          :tags="post.tags"
-          :published="post.published"
-        />
+        <ArchiveCard :path="post.path" :title="post.title" :date="post.date" :description="post.description"
+          :image="post.image" :alt="post.alt" :og-image="post.ogImage" :tags="post.tags" :published="post.published" />
       </template>
       <template v-if="data?.length === 0">
         <BlogEmpty />

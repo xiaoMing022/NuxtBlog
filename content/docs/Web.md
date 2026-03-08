@@ -1,11 +1,11 @@
 ---
 title: 前端
-date:  2025/12/16
+date:  2026/3/1
 description: 前端学习指南
 image: /blogs-img/web.png
 alt: froent study
 ogImage: /blogs-img/web.png
-tags: ['promethues']
+tags: ['web','Vue','React']
 published: true
 ---
 

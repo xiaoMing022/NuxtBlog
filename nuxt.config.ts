@@ -70,6 +70,10 @@ export default defineNuxtConfig({
         highlight: {
           theme: 'dracula',
         },
+        toc: {
+          depth: 3, // include h3 headings
+          searchDepth:1
+        }
       },
     },
   },
