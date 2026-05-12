@@ -2,9 +2,9 @@
 title: LangGraph
 date:  2026/4/20
 description: 从线到环
-image: /blogs-img/LangGraph.jpg
+image: /blogs-img/Langgraph.jpg
 alt: LangGraph
-ogImage: /blogs-img/LangGraph.jpg
+ogImage: /blogs-img/Langgraph.jpg
 tags: ['agent']
 published: true
 trending: true
@@ -190,10 +190,6 @@ app = workflow.compile()
 2. **Nodes** 是打工人，只负责接收 $State$、干活、更新 $State$。
 3. **Edges** 是交通警察，负责指引 $State$ 的流向，尤其是**条件边**实现了我们梦寐以求的“循环”能力。
 
-很高兴我们继续深入。在 1.2 节中，我们搭建了图的“骨架”，但要让这个工厂真正高效运转，还需要理解它的“血液循环系统”和“出厂设置”。
-
-现在，我们进入 **第一阶段：架构基石** 的最后一小节：**1.3 核心机制详解：状态更新 (Reducers) 与 编译 (Compile)**。
-
 ------
 
 ### 1.3 核心机制详解：状态更新与图的编译
@@ -367,9 +363,6 @@ app.invoke(None, config)
 - **断点** 是实现“人类在环（HITL）”的基础，它将 Agent 从“全自动”降级为“半自动”，从而换取极高的安全性 。
 - 实现断点有两个前提：**编译时指定（静态）/代码内触发（动态）**，以及**必须配置 Checkpointer** 。
 
-既然我们已经掌握了如何让 Agent “刹车”，现在我们要进入更高级的领域：**如何让 Agent “后悔”**。
-
-欢迎来到 **第二阶段：深度人机交互** 的第二小节 —— **2.2 时光倒流与状态编辑 (State Shifting)**。
 
 ------
 
