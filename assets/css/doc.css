@@ -1,0 +1,221 @@
+/* ================================================
+   Shiki 双主题切换（github-light / github-dark）
+   ================================================ */
+
+/* 默认显示亮色主题 token */
+html .shiki span { color: var(--shiki-default); }
+
+/* .dark 类时切换为暗色主题 token */
+html.dark .shiki span { color: var(--shiki-dark) !important; }
+
+/* 代码块背景同步切换 */
+html .shiki,
+html .shiki code {
+  background-color: var(--shiki-default-bg) !important;
+}
+html.dark .shiki,
+html.dark .shiki code {
+  background-color: var(--shiki-dark-bg) !important;
+}
+
+/* ================================================
+   Doc 文章渲染样式
+   覆盖 @tailwindcss/typography 的过宽间距
+   ================================================ */
+
+/* ---------- 全局段落/文字间距压缩 ---------- */
+.doc-content {
+  --doc-font-size: 0.9375rem;   /* 15px，比 prose-base 小一档 */
+  --doc-line-height: 1.65;
+  --doc-color: #24292f;
+  --doc-muted: #57606a;
+  --doc-border: #d0d7de;
+  --doc-bg-subtle: #f6f8fa;
+  --doc-code-bg: #eef0f3;
+  --doc-code-color: #c9284d;
+  --doc-heading-color: #1f2328;
+  --doc-link-color: #0969da;
+  --doc-blockquote-border: #d0d7de;
+
+  font-size: var(--doc-font-size);
+  line-height: var(--doc-line-height);
+  color: var(--doc-color);
+  word-break: break-word;
+}
+
+/* 暗色模式变量 */
+.dark .doc-content {
+  --doc-color: #e6edf3;
+  --doc-muted: #8b949e;
+  --doc-border: #30363d;
+  --doc-bg-subtle: #161b22;
+  --doc-code-bg: #2d333b;
+  --doc-code-color: #ff7b72;
+  --doc-heading-color: #f0f6fc;
+  --doc-link-color: #58a6ff;
+  --doc-blockquote-border: #3d444d;
+}
+
+/* ---------- 标题 ---------- */
+.doc-content h1,
+.doc-content h2,
+.doc-content h3,
+.doc-content h4,
+.doc-content h5,
+.doc-content h6 {
+  color: var(--doc-heading-color);
+  font-weight: 600;
+  line-height: 1.25;
+  margin-top: 1.5em;
+  margin-bottom: 0.5em;
+}
+
+.doc-content h1 { font-size: 1.875rem; border-bottom: 1px solid var(--doc-border); padding-bottom: 0.3em; }
+.doc-content h2 { font-size: 1.5rem;   border-bottom: 1px solid var(--doc-border); padding-bottom: 0.3em; }
+.doc-content h3 { font-size: 1.25rem; }
+.doc-content h4 { font-size: 1.05rem; }
+.doc-content h5 { font-size: 0.95rem; }
+.doc-content h6 { font-size: 0.875rem; color: var(--doc-muted); }
+
+/* ---------- 段落 ---------- */
+.doc-content p {
+  margin-top: 0;
+  margin-bottom: 0.75em;   /* ← 原 prose 约 1.5em，压缩一半 */
+}
+
+/* ---------- 列表 ---------- */
+.doc-content ul,
+.doc-content ol {
+  padding-left: 1.5em;
+  margin-top: 0;
+  margin-bottom: 0.75em;
+}
+
+.doc-content li {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;  /* ← 原 prose 约 0.5em */
+}
+
+.doc-content li > p {
+  margin-bottom: 0.25em;
+}
+
+.doc-content ul { list-style-type: disc; }
+.doc-content ol { list-style-type: decimal; }
+
+/* 嵌套列表 */
+.doc-content ul ul,
+.doc-content ol ul,
+.doc-content ul ol,
+.doc-content ol ol {
+  margin-top: 0.15em;
+  margin-bottom: 0.15em;
+}
+
+/* ---------- 行内代码 ---------- */
+.doc-content :not(pre) > code {
+  background-color: var(--doc-code-bg);
+  color: var(--doc-code-color);
+  padding: 0.1em 0.4em;
+  border-radius: 4px;
+  font-size: 0.875em;
+  font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+  white-space: nowrap;
+}
+
+/* ---------- 代码块（背景由 Shiki CSS 变量控制） ---------- */
+.doc-content pre {
+  border: 1px solid var(--doc-border);
+  border-radius: 6px;
+  padding: 1em 1.25em;
+  margin-top: 0;
+  margin-bottom: 1em;
+  overflow-x: auto;
+  font-size: 0.875em;
+  line-height: 1.6;
+}
+
+.doc-content pre code {
+  background: none;
+  color: inherit;
+  padding: 0;
+  border-radius: 0;
+  font-size: inherit;
+  white-space: pre;
+}
+
+/* ---------- 引用块 ---------- */
+.doc-content blockquote {
+  border-left: 4px solid var(--doc-blockquote-border);
+  color: var(--doc-muted);
+  margin: 0 0 0.75em 0;
+  padding: 0.25em 1em;
+}
+
+.doc-content blockquote > :first-child { margin-top: 0; }
+.doc-content blockquote > :last-child  { margin-bottom: 0; }
+
+/* ---------- 表格 ---------- */
+.doc-content table {
+  border-collapse: collapse;
+  width: 100%;
+  margin-bottom: 1em;
+  font-size: 0.875em;
+  overflow-x: auto;
+  display: block;
+}
+
+.doc-content th,
+.doc-content td {
+  border: 1px solid var(--doc-border);
+  padding: 0.4em 0.8em;
+  text-align: left;
+}
+
+.doc-content th {
+  background-color: var(--doc-bg-subtle);
+  font-weight: 600;
+}
+
+.doc-content tr:nth-child(even) td {
+  background-color: var(--doc-bg-subtle);
+}
+
+/* ---------- 分割线 ---------- */
+.doc-content hr {
+  border: none;
+  border-top: 1px solid var(--doc-border);
+  margin: 1.5em 0;
+}
+
+/* ---------- 链接 ---------- */
+.doc-content a {
+  color: var(--doc-link-color);
+  text-decoration: none;
+}
+.doc-content a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- 图片 ---------- */
+.doc-content img {
+  max-width: 100%;
+  border-radius: 6px;
+  margin: 0.5em 0;
+}
+
+/* ---------- 强调 ---------- */
+.doc-content strong { font-weight: 600; }
+.doc-content em     { font-style: italic; }
+
+/* ---------- 代码块滚动条 ---------- */
+.doc-content pre::-webkit-scrollbar {
+  height: 4px;
+}
+.doc-content pre::-webkit-scrollbar-track {
+  background: transparent;
+}
+.doc-content pre::-webkit-scrollbar-thumb {
+  background-color: var(--doc-border);
+  border-radius: 4px;
+}

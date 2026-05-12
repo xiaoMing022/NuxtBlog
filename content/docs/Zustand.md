@@ -5,7 +5,7 @@ description: 了解Zustand的使用
 image: /blogs-img/blog2.jpg
 alt: Zustand state management
 ogImage: /blogs-img/blog2.jpg
-tags: ['状态管理器']
+tags: ['状态管理器','web']
 published: true
 ---
 

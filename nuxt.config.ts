@@ -3,7 +3,10 @@ import { seoData } from './data'
 // https://nuxt.com/docs/api/configuration/nuxt-config
 export default defineNuxtConfig({
   compatibilityDate: '2024-09-30',
-  css: ['~/assets/css/tailwind.css'],
+  css: [
+    '~/assets/css/tailwind.css',
+    '~/assets/css/doc.css',
+  ],
   postcss: {
     plugins: {
       '@tailwindcss/postcss': {},
@@ -68,11 +71,20 @@ export default defineNuxtConfig({
     build: {
       markdown: {
         highlight: {
-          theme: 'dracula',
+          // 双主题：跟随 color-mode 自动切换
+          theme: {
+            default: 'github-light',   // 亮色模式
+            dark:    'github-dark',    // 暗色模式（.dark class）
+          },
+          langs: [
+            'js', 'ts', 'jsx', 'tsx', 'vue', 'html', 'css', 'scss',
+            'json', 'yaml', 'markdown', 'bash', 'shell', 'python',
+            'java', 'sql', 'go', 'rust', 'cpp', 'c',
+          ],
         },
         toc: {
-          depth: 3, // include h3 headings
-          searchDepth:1
+          depth: 4,        // 解析到 h4
+          searchDepth: 3,  // 生成 3 层嵌套目录树
         }
       },
     },

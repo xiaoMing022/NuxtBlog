@@ -7,6 +7,7 @@ alt: How to use package.json
 ogImage: /blogs-img/blog1.jpg
 tags: ['工程', 'Node']
 published: true
+trending: true
 ---
 
 # package.json

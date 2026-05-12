@@ -7,6 +7,7 @@ alt: How to fix vuex type issue
 ogImage: /blogs-img/promethues.png
 tags: ['promethues']
 published: false
+trending: false
 ---
 
 # Prometheus
