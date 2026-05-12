@@ -15,10 +15,10 @@ interface Website {
 // 2. 模拟数据 (请替换为你真实的图片和链接)
 const websites: Website[] = [
   {
-    title: 'Dudu Agent',
-    description: '一个基于Dify的智能助手，支持多种语言，多种模型，多种功能。',
-    url: 'https://dudu.liu2002.top/home',
-    github: 'https://github.com/yourname/dudu-home',
+    title: 'Agent',
+    description: '基于LangGraph的智能助手',
+    url: 'https://chat.liu2002.top/',
+    github: 'https://github.com/xiaoMing022/fast-app',
     image: dudu, // 示例图
     tags: ['React Native', 'Dify', 'Agent'],
     status: '运行中',
